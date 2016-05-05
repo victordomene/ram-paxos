@@ -1,6 +1,6 @@
 """
-This module defines the abstract class of a VM. It provides all of
-the functionality that is implemented by a specific type of VM. In
+This module defines the abstract class of a receiver. It provides all of
+the functionality that is implemented by a specific type of receiver. In
 Paxos, we will allow some different types of communication, but all of them
 must present this interface.
 
@@ -11,44 +11,17 @@ accessible.
 
 from abc import abstractmethod
 
-class VM():
+class Receiver():
 	def __init__(self):
 		return
-
-	@property
-	def messenger(self):
-		"""
-		The messenger instance of this VM. Ideally this would not need
-		to be exposed; however, we must cheat on bootstrap, and we do this
-		by exposing the messenger.
-		"""
-		return self.messenger
-
-	@property
-	def proposer(self):
-		"""
-		The proposer instance of this VM.
-		"""
-		return self.proposer
-
-	@property
-	def acceptor(self):
-		"""
-		The acceptor instance of this VM.
-		"""
-		return self.acceptor
-
-	@property
-	def learner(self):
-		"""
-		The learner instance of this VM.
-		"""
-		return self.learner
 
 	@abstractmethod
 	def serve(self):
 		"""
-		Starts an instance of the server (which will receive calls).
+		Starts an instance of the server defined by Receiver.
+
+		@param host: the host in which server will run
+		@param port: the port in the given host
 		"""
 		return
 

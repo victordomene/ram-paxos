@@ -17,44 +17,19 @@ class Proposer():
 		self.highest_proposal = None
 		self.promised_acceptors = set()
 
-		# how to initialize this?
 		self.quorum_size = None
 		return
 
-	@property
-	def messenger(self):
-		"""
-		The messenger instance used by this acceptor.
-		"""
-		return self.messenger
+	def propose(self, p, n, v, quorum):
+		# cannot propose if we are currently proposing something else
+		if self.current_proposal is not None:
+			return False
 
-	@property
-	def quorum_size(self):
-		"""
-		The size of a quorum.
-		"""
-		return self.quorum_size
+		# create proposal with passed in information
+		self.current_proposal = Proposal(n, p, v)
 
-	@property
-	def promised_acceptors(self):
-		"""
-		A set of acceptors who have promised to us.
-		"""
-		return self.promised_acceptors
-
-	@property
-	def current_proposal(self):
-		"""
-		The current proposal that we are trying to pass.
-		"""
-		return self.current_proposal
-
-	@property
-	def highest_proposal(self):
-		"""
-		The highest proposal that was received within the promises.
-		"""
-		return self.current_proposal
+		# send the prepare message to everybody in the quorum
+		self.prepare(p, n, quorum)
 
 	def prepare(self, p, n, quorum):
 		"""

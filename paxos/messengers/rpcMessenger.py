@@ -19,33 +19,21 @@ class grpcMessenger(Messenger):
 		self.destinations = {}
 		return
 
-	@property
-	def name(self):
-		"""
-		The name through which this machine is recognized in the network.
-		"""
-		return self.name
-
-	@property
-	def destinations(self):
-		"""
-		A dictionary that maps names of machines to a stub corresponding
-		to the machine we want to communicate to.
-		"""
-		return self.destinations
-
 	def _fetch_stub(self, name):
 		# fetch the stub for the proposer
 		try:
 			stub = self.destinations[name]
 		except KeyError:
-			print "send_promise: could not find stub for {}".format(name)
+			print "_fetch_stub: could not find stub for {}".format(name)
 			return None
 		except:
-			print "send_promise: unknown error"
+			print "_fetch_stub: unknown error"
 			return None
 
 		return stub
+
+	def get_quorum(self):
+		return self.destinations.keys()
 
 	def add_destination(self, name, host, port):
 		"""
