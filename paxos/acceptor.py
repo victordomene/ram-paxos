@@ -34,7 +34,7 @@ class Acceptor():
 		"""
 		return self.decree_to_highest_proposal
 
-	def handle_prepare(self):
+	def handle_prepare(self, p, n, proposer):
 		"""
 		Handles a prepare request that has been received. This will succeed if
 		the proposal number is higher than any other prepare request that we
@@ -48,9 +48,9 @@ class Acceptor():
 
 		@return True if promise is made; False otherwise
 		"""
-		return
+		return True
 
-	def handle_accept(self):
+	def handle_accept(self, p, n, v, proposer):
 		"""
 		Handles an accept request that has been received. This will always
 		succeed, unless we promised a proposal with a higher number that we
@@ -63,4 +63,4 @@ class Acceptor():
 
 		@return True if accepted; False otherwise
 		"""
-		return
+		return True

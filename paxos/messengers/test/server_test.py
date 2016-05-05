@@ -8,7 +8,7 @@ import time
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))))
-from grpc_messenger import paxos_pb2
+from protobufs import paxos_pb2
 
 class VM(paxos_pb2.BetaVMServicer):
 	def handle_prepare(self, request, context):

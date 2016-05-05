@@ -6,7 +6,10 @@ RPC Protocol (gRPC).
 from grpc.beta import implementations
 from messenger import Messenger
 
-import paxos_pb2
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from protobufs import paxos_pb2
 
 TIMEOUT_SECONDS = 10
 

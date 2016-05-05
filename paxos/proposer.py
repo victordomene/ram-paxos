@@ -30,7 +30,7 @@ class Proposer():
 		"""
 		return self.current_proposal
 
-	def prepare(self):
+	def prepare(self, p, n, quorum):
 		"""
 		Wrapper on the messenger: simply sends a prepare message for the
 		current proposal to a quorum.
@@ -41,9 +41,9 @@ class Proposer():
 
 		@return True if message is sent successfully; False otherwise
 		"""
-		return
+		return True
 
-	def handle_promise(self):
+	def handle_promise(self, p, n, v, acceptor):
 		"""
 		Handles a promise given by an acceptor. This must check the @param v
 		(see below) and update our current proposal accordingly: the proposer
@@ -60,4 +60,4 @@ class Proposer():
 
 		Does not return.
 		"""
-		return
+		return True

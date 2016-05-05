@@ -8,7 +8,7 @@ import time
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))))
-from grpc_messenger import rpcMessenger
+from messengers import rpcMessenger
 
 def run():
 	messenger = rpcMessenger.grpcMessenger("1")

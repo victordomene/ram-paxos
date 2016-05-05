@@ -41,11 +41,13 @@ message PromiseRequest {
 	// This assumes that the value will always be an integer; this may not
 	// be the case for our workloads. Revisit this.
 	uint64 highest_voted_value = 3;
+	string acceptor = 4;
 }
 
 message RefusePromiseRequest {
 	uint64 proposal_number = 1;
 	uint64 decree_number = 2;
+	string acceptor = 4;
 }
 
 message AcceptedRequest {
@@ -55,6 +57,7 @@ message AcceptedRequest {
 	// This assumes that the value will always be an integer; this may not
 	// be the case for our workloads. Revisit this.
 	uint64 value = 3;
+	string acceptor = 4;
 }
 
 // Simple OK Response, with true/false

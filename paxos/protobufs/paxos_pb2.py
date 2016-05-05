@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='paxos.proto',
   package='paxos',
   syntax='proto3',
-  serialized_pb=_b('\n\x0bpaxos.proto\x12\x05paxos\"R\n\x0ePrepareRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\x10\n\x08proposer\x18\x03 \x01(\t\"`\n\rAcceptRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\r\n\x05value\x18\x03 \x01(\x04\x12\x10\n\x08proposer\x18\x04 \x01(\t\"]\n\x0ePromiseRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\x1b\n\x13highest_voted_value\x18\x03 \x01(\x04\"F\n\x14RefusePromiseRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\"P\n\x0f\x41\x63\x63\x65ptedRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\r\n\x05value\x18\x03 \x01(\x04\"\x1e\n\nOKResponse\x12\x10\n\x08response\x18\x01 \x01(\x08\x32\xc5\x02\n\x02VM\x12:\n\x0ehandle_prepare\x12\x15.paxos.PrepareRequest\x1a\x11.paxos.OKResponse\x12@\n\x15handle_accept_request\x12\x14.paxos.AcceptRequest\x1a\x11.paxos.OKResponse\x12:\n\x0ehandle_promise\x12\x15.paxos.PromiseRequest\x1a\x11.paxos.OKResponse\x12G\n\x15handle_refuse_promise\x12\x1b.paxos.RefusePromiseRequest\x1a\x11.paxos.OKResponse\x12<\n\x0fhandle_accepted\x12\x16.paxos.AcceptedRequest\x1a\x11.paxos.OKResponseb\x06proto3')
+  serialized_pb=_b('\n\x0bpaxos.proto\x12\x05paxos\"R\n\x0ePrepareRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\x10\n\x08proposer\x18\x03 \x01(\t\"`\n\rAcceptRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\r\n\x05value\x18\x03 \x01(\x04\x12\x10\n\x08proposer\x18\x04 \x01(\t\"o\n\x0ePromiseRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\x1b\n\x13highest_voted_value\x18\x03 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x04 \x01(\t\"X\n\x14RefusePromiseRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x04 \x01(\t\"b\n\x0f\x41\x63\x63\x65ptedRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\r\n\x05value\x18\x03 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x04 \x01(\t\"\x1e\n\nOKResponse\x12\x10\n\x08response\x18\x01 \x01(\x08\x32\xc5\x02\n\x02VM\x12:\n\x0ehandle_prepare\x12\x15.paxos.PrepareRequest\x1a\x11.paxos.OKResponse\x12@\n\x15handle_accept_request\x12\x14.paxos.AcceptRequest\x1a\x11.paxos.OKResponse\x12:\n\x0ehandle_promise\x12\x15.paxos.PromiseRequest\x1a\x11.paxos.OKResponse\x12G\n\x15handle_refuse_promise\x12\x1b.paxos.RefusePromiseRequest\x1a\x11.paxos.OKResponse\x12<\n\x0fhandle_accepted\x12\x16.paxos.AcceptedRequest\x1a\x11.paxos.OKResponseb\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -151,6 +151,13 @@ _PROMISEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='acceptor', full_name='paxos.PromiseRequest.acceptor', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -164,7 +171,7 @@ _PROMISEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=204,
-  serialized_end=297,
+  serialized_end=315,
 )
 
 
@@ -189,6 +196,13 @@ _REFUSEPROMISEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='acceptor', full_name='paxos.RefusePromiseRequest.acceptor', index=2,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -201,8 +215,8 @@ _REFUSEPROMISEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=299,
-  serialized_end=369,
+  serialized_start=317,
+  serialized_end=405,
 )
 
 
@@ -234,6 +248,13 @@ _ACCEPTEDREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='acceptor', full_name='paxos.AcceptedRequest.acceptor', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -246,8 +267,8 @@ _ACCEPTEDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=371,
-  serialized_end=451,
+  serialized_start=407,
+  serialized_end=505,
 )
 
 
@@ -277,8 +298,8 @@ _OKRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=453,
-  serialized_end=483,
+  serialized_start=507,
+  serialized_end=537,
 )
 
 DESCRIPTOR.message_types_by_name['PrepareRequest'] = _PREPAREREQUEST
@@ -339,31 +360,49 @@ from grpc.framework.common import cardinality
 from grpc.framework.interfaces.face import utilities as face_utilities
 
 class BetaVMServicer(object):
+  """Defines a VM service, which provides functionality for Proposer, Acceptor
+  and Learner.
+  """
   def handle_prepare(self, request, context):
+    """Acceptors will receive these
+    """
     context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
   def handle_accept_request(self, request, context):
     context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
   def handle_promise(self, request, context):
+    """Proposers will receive these
+    """
     context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
   def handle_refuse_promise(self, request, context):
     context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
   def handle_accepted(self, request, context):
+    """Learners will receive these
+    """
     context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
 
 class BetaVMStub(object):
+  """Defines a VM service, which provides functionality for Proposer, Acceptor
+  and Learner.
+  """
   def handle_prepare(self, request, timeout):
+    """Acceptors will receive these
+    """
     raise NotImplementedError()
   handle_prepare.future = None
   def handle_accept_request(self, request, timeout):
     raise NotImplementedError()
   handle_accept_request.future = None
   def handle_promise(self, request, timeout):
+    """Proposers will receive these
+    """
     raise NotImplementedError()
   handle_promise.future = None
   def handle_refuse_promise(self, request, timeout):
     raise NotImplementedError()
   handle_refuse_promise.future = None
   def handle_accepted(self, request, timeout):
+    """Learners will receive these
+    """
     raise NotImplementedError()
   handle_accepted.future = None
 

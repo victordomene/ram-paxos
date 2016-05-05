@@ -45,15 +45,15 @@ class Learner():
 		"""
 		return self.proposal_and_decree_to_stats
 
-	def handle_accepted(self):
+	def handle_accepted(self, p, n, v, acceptor):
 		"""
 		Handles the event of an acceptor voting for a proposal.
 
 		@param p: the proposal number in question
 		@param n: the decree number in question
 		@param v: the value accepted
-		@param acceptor: the acceptor to whom this event refers
+		@param acceptor: the acceptor who has accepted this value
 
 		Does not return.
 		"""
-		return
+		return True
