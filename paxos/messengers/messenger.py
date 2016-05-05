@@ -42,6 +42,7 @@ class Messenger():
 
 		@param p: the proposal number in question
 		@param n: the decree number in question
+		@param v: the value proposed
 		@param quorum: the quorum to which message will be sent
 
 		@return True if message is sent; False otherwise
@@ -94,6 +95,7 @@ class Messenger():
 
 		@param p: the proposal number in question
 		@param n: the decree number in question
+		@param v: the value accepted
 		@param learners: the set of learners to which the message will be sent
 
 		@return True if message is sent; False otherwise

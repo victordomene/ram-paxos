@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package paxos;
+
+// Defines a VM service, which provides functionality for Proposer, Acceptor
+// and Learner.
+service VM {
+	// Acceptors will receive these
+	rpc handle_prepare (PrepareRequest) returns (OKResponse);
+	rpc handle_accept_request (AcceptRequest) returns (OKResponse);
+
+	// Proposers will receive these
+	rpc handle_promise (PromiseRequest) returns (OKResponse);
+	rpc handle_refuse_promise (RefusePromiseRequest) returns (OKResponse);
+
+	// Learners will receive these
+	rpc handle_accepted (AcceptedRequest) returns (OKResponse);
+}
+
+message PrepareRequest {
+	uint64 proposal_number = 1;
+	uint64 decree_number = 2;
+	string proposer = 3;
+}
+
+message AcceptRequest {
+	uint64 proposal_number = 1;
+	uint64 decree_number = 2;
+	
+	// This assumes that the value will always be an integer; this may not
+	// be the case for our workloads. Revisit this.
+	uint64 value = 3;
+
+	string proposer = 4;
+}
+
+message PromiseRequest {
+	uint64 proposal_number = 1;
+	uint64 decree_number = 2;
+	
+	// This assumes that the value will always be an integer; this may not
+	// be the case for our workloads. Revisit this.
+	uint64 highest_voted_value = 3;
+}
+
+message RefusePromiseRequest {
+	uint64 proposal_number = 1;
+	uint64 decree_number = 2;
+}
+
+message AcceptedRequest {
+	uint64 proposal_number = 1;
+	uint64 decree_number = 2;
+
+	// This assumes that the value will always be an integer; this may not
+	// be the case for our workloads. Revisit this.
+	uint64 value = 3;
+}
+
+// Simple OK Response, with true/false
+message OKResponse {
+	bool response = 1;
+}
