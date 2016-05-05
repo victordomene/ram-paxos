@@ -54,13 +54,21 @@ class grpcVM(VM):
 		return paxos_pb2.OKResponse(response = success)
 
 	def handle_promise(self, request, context):
-		p = request.proposal_number
+		had_previous = request.had_previous
+
+		# handle the case where we had no previous value set
+		if had_previous:
+			p = request.proposal_number
+			v = request.value
+		else:
+			p = None
+			v = None
+
 		n = request.decree_number
-		highest_voted_value = request.highest_voted_value
 		acceptor = request.acceptor
 
 		if VM_DEBUG:
-			print "PromiseRequest received: p = {}, n = {}, highest_voted_value = {}, acceptor = {}".format(p, n, highest_voted_value, acceptor)
+			print "PromiseRequest received: p = {}, n = {}, highest_voted_value = {}, acceptor = {}".format(p, n, v, acceptor)
 
 		success = self.proposer.handle_promise(p, n, highest_voted_value, acceptor)
 

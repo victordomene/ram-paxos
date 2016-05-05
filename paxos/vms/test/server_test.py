@@ -14,7 +14,9 @@ from protobufs import paxos_pb2
 from vms import rpcVM
 
 def run():
-	server = paxos_pb2.beta_create_VM_server(rpcVM.grpcVM("FIRST MACHINE"))
+	vm = rpcVM.grpcVM("FIRST MACHINE")
+
+	server = paxos_pb2.beta_create_VM_server(vm)
 	server.add_insecure_port("localhost:6666")
 	server.start()
 

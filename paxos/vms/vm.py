@@ -48,8 +48,7 @@ class VM():
 	@abstractmethod
 	def serve(self):
 		"""
-		Instantiates a server that will be able to receive requests
-		and respond appropriately.
+		Starts an instance of the server (which will receive calls).
 		"""
 		return
 
@@ -100,7 +99,7 @@ class VM():
 		This method should be used exclusively by a Learner.
 
 		Responds appropriately to an accepted request. This must check that
-		enough people have accepted this value for this decree, and if so, it 
+		enough people have accepted this value for this decree, and if so, it
 		must add the decree to a "law book".
 		"""
 		return
