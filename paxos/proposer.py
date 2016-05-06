@@ -16,6 +16,7 @@ class Proposer():
 		self.current_proposal = None
 		self.highest_proposal = None
 		self.promised_acceptors = set()
+		self.proposal_sent = False
 
 		self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 		return
@@ -49,6 +50,10 @@ class Proposer():
 
 	def _check_promise_count(self):
 		if len(self.promised_acceptors) >= self.min_quorum_size:
+            # Proposal already sent
+            if self.proposal_sent:
+            	return
+
 			# fetch the information that will be passed to acceptors
 			p = self.current_proposal.number
 			n = self.current_proposal.decree
@@ -65,6 +70,8 @@ class Proposer():
 
 			# send accept requests to a quorum
 			self.messenger.send_accept_request(p, n, v, self.quorum)
+
+			self.proposal_sent = True
 
 	def handle_promise(self, had_previous, p, n, v, acceptor):
 		"""
@@ -100,7 +107,7 @@ class Proposer():
 
 			# we may need to initiate the highest proposal here
 			if self.highest_proposal is None:
-				self.highest_proposal = Proposal()
+				self.highest_proposal = Proposal(p, n, v)
 
 			# update the value of the proposal according to the rules. Notice here
 			# that p could be None
