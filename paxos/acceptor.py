@@ -4,6 +4,8 @@ This module implements an acceptor, using the specified messenger.
 
 from proposal import Proposal
 
+ACCEPTOR_DEBUG = True
+
 class Acceptor():
     """
     Implementation of a Paxon acceptor. Using some optimizations, we need to
@@ -23,21 +25,6 @@ class Acceptor():
 
         return
 
-    @property
-    def messenger(self):
-        """
-        The messenger instance used by this acceptor.
-        """
-        return self.messenger
-
-    @property
-    def accepted_proposals(self):
-        """
-        A dictionary of the highest proposal accepted, indexed by the decree
-        number.
-        """
-        return self.accepted_proposals
-
     def handle_prepare(self, p, n, proposer):
         """
         Handles a prepare request that has been received. This will succeed if
@@ -52,29 +39,24 @@ class Acceptor():
 
         @return True if promise is made; False otherwise
         """
-        print "GOT PREPARE"
-
-        print self.accepted_proposals
 
         # We have never accepted a proposal for this decree
         if n not in self.accepted_proposals:
-            print "NOT IN ACCEPTED PROPOSALS"
+            if ACCEPTOR_DEBUG:
+                print "ACCEPTOR_DEBUG: First proposal {} for decree {}".format(p, n)
 
             # had_previous = False so p and v will be ignored
             self.messenger.send_promise(False, 0, n, 0, proposer)
-
-            print "AFTER SEND_PROMISE"
 
             # Also we make a promise never to accept proposal numbered less than p
             assert(n not in self.promises)
             self.promises[n] = p
 
-            print "RETURNING TRUE"
-
             return True
         # We have accepted a proposal but want to override it
         elif self.accepted_proposals[n].p < p:
-            print 'Subsequent proposal number %d for decree %d' % (p, n)
+            if ACCEPTOR_DEBUG:
+                print "ACCEPTOR_DEBUG: Subsequent proposal number {} for decree {}".format(p, n)
 
             highest_accepted = self.accepted_proposals[n]
 
@@ -87,7 +69,8 @@ class Acceptor():
 
             return True
         else:
-            print 'Refused promise for proposal number %d for decree %d' % (p, n)
+            if ACCEPTOR_DEBUG:
+                print "ACCEPTOR_DEBUG: Refused promise for proposal number {} for decree {}".format(p, n)
 
             # Else we refuse
             self.messenger.send_refuse_proposal(p, n, proposer)
@@ -108,30 +91,30 @@ class Acceptor():
         @return True if accepted; False otherwise
         """
         
-        print "IN HANDLE ACCEPT REQUEST"
-
         # We promissed not to accept any proposals less than promises[n]
         if n in self.promises and self.promises[n] > p:
+            if ACCEPTOR_DEBUG:
+                print "ACCEPTOR_DEBUG: Promised not to answer proposals less than {} for decree {}".format(n, self.promises[n])
+
             return False
 
-        print "DID NOT PROMISE"
-
         # If everything is fine, we proceed to accept
-        #cur = self.accepted_proposals[n]
-        #assert(cur == None or cur.n < n)
+        if n in self.accepted_proposals:
+            assert(self.accepted_proposals[n].p < p)
 
         self.accepted_proposals[n] = Proposal(p, n, v)
+
+        if ACCEPTOR_DEBUG:
+            print "ACCEPTOR_DEBUG: Accepted proposal {} for decree {} with value {}".format(p, n, v)
 
         # Finally we just send what we accepted to all learners
         # !# Everyone is a learner !!!!2!!
         learners = self.messenger.get_quorum()
 
-        print "GOT LEARNERS: {}".format(learners)
-
         for learner in learners:
-            print learner, p, n, v
-            self.messenger.send_accepted(p, n, v, learner)
+            if ACCEPTOR_DEBUG:
+                print "ACCEPTOR_DEBUG: Reported acceptance of proposal {} and decree {} to learner {}".format(p, n, learner)
 
-        print "SENT ACCEPTED TO LEARNERS"
+            self.messenger.send_accepted(p, n, v, learner)
 
         return True

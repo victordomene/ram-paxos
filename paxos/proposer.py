@@ -4,6 +4,8 @@ This module implements a proposer, using the specified messenger.
 
 from proposal import Proposal
 
+PROPOSER_DEBUG = True
+
 class Proposer():
     """
     Implementation of a Paxon proposer.
@@ -24,6 +26,9 @@ class Proposer():
     def propose(self, p, n, v, quorum):
         # cannot propose if we are currently proposing something else
         if self.current_proposal is not None:
+            if PROPOSER_DEBUG:
+                print "PROPOSER_DEBUG: Attempted to create proposal {} for decree {} when proposal {} for decree is already in place".format(p, n, self.current_proposal.p, self.current_proposal.n)
+
             return False
 
         # create proposal with passed in information
@@ -45,21 +50,24 @@ class Proposer():
         """
 
         # simply sends the RPC call
-        print "PREPARING"
-
         self.messenger.send_prepare(p, n, quorum)
+
+        if PROPOSER_DEBUG:
+            print "PROPOSER_DEBUG: Proposal {} for decree {} initiated".format(p, n)
+
         return True
 
     def _check_promise_count(self):
-
-        print "CHECKING COUNT: {}, {}".format(len(self.promised_acceptors), self.min_quorum_size)
+        if PROPOSER_DEBUG:
+            print "PROPOSER_DEBUG: Checking promise count: {}, when min_quorum_size is {}".format(len(self.promised_acceptors), self.min_quorum_size)
 
         if len(self.promised_acceptors) >= self.min_quorum_size:
             # Proposal already sent
             if self.proposal_sent:
-                return
+                if PROPOSER_DEBUG:
+                    print "PROPOSER_DEBUG: Attempt to send a proposal that has already been sent"
 
-            print "NOT SENT"
+                return
 
             # fetch the information that will be passed to acceptors
             p = self.current_proposal.p
@@ -67,19 +75,17 @@ class Proposer():
             v = self.current_proposal.v
 
             # the value must be the value corresponding to the highest-numbered
-            # proposal we have seen in the quorum
+            # proposal we have seen in the quorum (if any)
             if self.highest_proposal is not None:
                 v = self.highest_proposal.v
 
-            print p, n, v
+                if PROPOSER_DEBUG:
+                    print "PROPOSER_DEBUG: Proposal {} forced to take value {} by Paxos conditions".format(p, v)
 
-            # v could be None, if there was no previous value assigned to
-            # this decree by any acceptor. In that case, we may propose
-            # whatever we initially wanted to propose
+            if PROPOSER_DEBUG:
+                print "PROPOSER_DEBUG: Proposal {} with value {} sent to promised acceptors: {}".format(p, v, self.promised_acceptors)
 
-            # send accept requests to a quorum
-            print "SEND_ACCEPT_REQUEST CALLED"
-
+            # send accept request to the promised acceptors !# ??
             self.messenger.send_accept_request(p, n, v, self.promised_acceptors)
 
             self.proposal_sent = True
@@ -103,26 +109,27 @@ class Proposer():
         @return XXX
         """
 
-        print "HANDLE PROMISE"
-
         # we must have a current proposal set in order to handle this request
         if self.current_proposal is None:
-            return False
+            if PROPOSER_DEBUG:
+                print "PROPOSER_DEBUG: Promise received when no proposal is in place; ignoring it"
 
-        print "NOT NONE PROPOSAL"
+            return False
 
         # check if the message refers to the current proposal decree; if it
         # does not, we have nothing to do.
-        
+
         if n != self.current_proposal.n:
+            if PROPOSER_DEBUG:
+                print "PROPOSER_DEBUG: Promise received for a different decree {} than current one {}".format(n, self.current_proposal.n)
+
             return False
 
-        print "CORRECT DECREE"
+        if PROPOSER_DEBUG:
+            print "PROPOSER_DEBUG: Promise received for decree {} up to proposal {} with value {}, from acceptor {}".format(n, p, v, acceptor)
 
         # if we had a previous proposal, update our highest_proposal accordingly
-        if p is not None:
-            assert(v is not None)
-
+        if had_previous:
             # we may need to initiate the highest proposal here
             if self.highest_proposal is None:
                 self.highest_proposal = Proposal(p, n, v)
@@ -130,11 +137,15 @@ class Proposer():
             # update the value of the proposal according to the rules. Notice here
             # that p could be None
             if p > self.highest_proposal.p:
+                if PROPOSER_DEBUG:
+                    print "PROPOSER_DEBUG: Updating highest_proposal to {} with value {}".format(p, v)
+
                 self.highest_proposal.value = v
                 self.highest_proposal.number = p
                 self.highest_proposal.decree = n
 
-        print "ADD ACCEPTOR TO PROMISED LIST"
+        if PROPOSER_DEBUG:
+            print "PROPOSER_DEBUG: Added acceptor {} to list of promised acceptors".format(acceptor)
 
         # update promised_acceptors and check whether we have enough
         self.promised_acceptors.add(acceptor)
@@ -154,6 +165,9 @@ class Proposer():
 
         @return XXX
         """
+
+        if PROPOSER_DEBUG:
+            print "PROPOSER_DEBUG: Proposal {} for decree {} was refused by acceptor {}; aborting it".format(p, n, acceptor)
 
         # reset the state kept by proposer
         self.current_proposal = None

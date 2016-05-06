@@ -29,6 +29,7 @@ def recv_message(sock):
     assert(len(header) == RDTP_HEADER_LENGTH)
 
     magic, version, status, msg_len = header[0], header[1], header[2], header[3]
+
     # Malformed message
     if magic != RDTP_MAGIC or version != RDTP_VERSION:
     	print header

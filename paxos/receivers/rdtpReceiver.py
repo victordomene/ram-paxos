@@ -16,8 +16,6 @@ RECEIVER_DEBUG = True
 
 class rdtpHandler(SocketServer.BaseRequestHandler):
     def handle(self):
-        print "got connection"
-
         while True:
             status, args = rdtp.recv(self.request)
 

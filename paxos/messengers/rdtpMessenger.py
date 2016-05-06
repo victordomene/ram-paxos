@@ -80,8 +80,6 @@ class rdtpMessenger():
             # create the appropriate request
             rdtp.send(stub, 0, "send_prepare", str(p), str(n), self.name)
 
-            print p, n, self.name
-
         return True
 
     def send_accept_request(self, p, n, v, quorum):

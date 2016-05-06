@@ -40,8 +40,6 @@ class VM():
         # track of our destinations)
         quorum = self.messenger.get_quorum()
         
-        print "PROPOSING"
-
         # actually propose
         return self.proposer.propose(p, n, v, quorum)
 
