@@ -60,11 +60,11 @@ class rdtpMessenger():
         @return True if successfully added; False otherwise
         """
         # This will block until we can connect
-        self.connect(host, port)
+        sock = self.connect(host, port)
         print 'Connected!'
 
         # simply change the entry; do not check if it already exists
-        self.destinations[name] = socket
+        self.destinations[name] = sock
 
         # function always succeeds
         return True
@@ -105,7 +105,7 @@ class rdtpMessenger():
             return False
 
         # create the appropriate request
-        rdtp.send(stub, 0, "send_promise", str(had_previous), str(p), str(n), str(v))
+        rdtp.send(stub, 0, "send_promise", str(had_previous), str(p), str(n), str(v), self.name)
 
         return True
 
@@ -117,7 +117,7 @@ class rdtpMessenger():
             return False
 
         # create the appropriate request
-        rdtp.send(stub, 0, "send_refuse_proposal", str(p), str(n))
+        rdtp.send(stub, 0, "send_refuse_proposal", str(p), str(n), self.name)
 
         return True
 
@@ -129,6 +129,6 @@ class rdtpMessenger():
             return False
 
         # create the appropriate request
-        rdtp.send(stub, 0, "send_accepted", str(p), str(n), str(v))
+        rdtp.send(stub, 0, "send_accepted", str(p), str(n), str(v), self.name)
 
         return True

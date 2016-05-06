@@ -30,7 +30,27 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
             if method == 'send_prepare':
                 assert(len(args) == 4)
                 p, n, proposer = int(args[1]), int(args[2]), args[3]
-                self.server.handle_prepare(p, n, proposer)
+                self.server.receiver.handle_prepare(p, n, proposer)
+
+            if method == 'send_promise':
+                assert(len(args) == 6)
+                had_previous, p, n, v, acceptor = bool(args[1]), int(args[2]), int(args[3]), int(args[4]), str(args[5])
+                self.server.receiver.handle_promise(had_previous, p, n, v, acceptor)
+
+            if method == 'send_accept_request':
+                assert(len(args) == 5)
+                p, n, v, proposer = int(args[1]), int(args[2]), int(args[3]), str(args[4])
+                self.server.receiver.handle_accept_request(p, n, v, proposer)
+
+            if method == 'send_refuse_proposal':
+                assert(len(args) == 4)
+                p, n, acceptor = int(args[1]), int(args[2]), str(args[3])
+                self.server.receiver.handle_refuse_proposal(p, n, acceptor)
+
+            if method == 'send_accepted':
+                assert(len(args) == 5)
+                p, n, v, acceptor = int(args[1]), int(args[2]), int(args[3]), str(args[4])
+                self.server.receiver.handle_accepted(p, n, v, acceptor)
 
 
 class rdtpReceiver():
@@ -42,6 +62,7 @@ class rdtpReceiver():
 
     def serve(self, host, port):
         self.server = SocketServer.TCPServer((host, port), rdtpHandler, False)
+        self.server.receiver = self
         self.server.server_bind()
         self.server.server_activate()
 
@@ -71,9 +92,9 @@ class rdtpReceiver():
             v = None
 
         if RECEIVER_DEBUG:
-            print "PromiseRequest received: p = {}, n = {}, highest_voted_value = {}, acceptor = {}".format(p, n, v, acceptor)
+            print "PromiseRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
-        return self.proposer.handle_promise(p, n, highest_voted_value, acceptor)
+        return self.proposer.handle_promise(had_previous, p, n, v, acceptor)
 
     def handle_refuse_promise(self, p, n, acceptor):
         if RECEIVER_DEBUG:
@@ -85,4 +106,4 @@ class rdtpReceiver():
         if RECEIVER_DEBUG:
             print "AcceptedRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
-        return self.learner.handle_accept_request(p, n, v)
+        return self.learner.handle_accepted(p, n, v, acceptor)

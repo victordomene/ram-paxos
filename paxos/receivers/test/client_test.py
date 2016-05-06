@@ -28,12 +28,22 @@ def run():
     vm = initialize_rdtp_vm("2")
     vm.add_destination("1", "localhost", 6666)
 
+    vm.serve("localhost", 6667)
+
+    time.sleep(2)
 
     p = 10
     n = 1
     v = 100
 
     vm.propose_to_quorum(p, n, v)
+
+    try:
+        while True:
+            time.sleep(600)
+            print "Woke up!"
+    except KeyboardInterrupt:
+        vm.stop_server()
 
 if __name__ == "__main__":
     run()
