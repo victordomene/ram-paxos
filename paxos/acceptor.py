@@ -53,6 +53,7 @@ class Acceptor():
             self.promises[n] = p
 
             return True
+
         # We have accepted a proposal but want to override it
         elif self.accepted_proposals[n].p < p:
             if ACCEPTOR_DEBUG:
@@ -91,7 +92,7 @@ class Acceptor():
         @return True if accepted; False otherwise
         """
         
-        # We promissed not to accept any proposals less than promises[n]
+        # We promised not to accept any proposals less than promises[n]
         if n in self.promises and self.promises[n] > p:
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Promised not to answer proposals less than {} for decree {}".format(n, self.promises[n])

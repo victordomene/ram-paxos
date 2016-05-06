@@ -31,7 +31,7 @@ class VM():
         """
         self.receiver.stop_server()
 
-    def propose_to_quorum(self, p, n, v):
+    def propose_to_quorum(self, n, v):
         """
         Starts a new proposal.
         """
@@ -41,7 +41,7 @@ class VM():
         quorum = self.messenger.get_quorum()
         
         # actually propose
-        return self.proposer.propose(p, n, v, quorum)
+        return self.proposer.propose(n, v, quorum)
 
     def add_destination(self, name, host, port):
         """

@@ -20,16 +20,22 @@ class Proposer():
         self.promised_acceptors = set()
         self.proposal_sent = False
 
+        self.proposal_counter = 0
+
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
         return
 
-    def propose(self, p, n, v, quorum):
+    def propose(self, n, v, quorum):
         # cannot propose if we are currently proposing something else
         if self.current_proposal is not None:
             if PROPOSER_DEBUG:
-                print "PROPOSER_DEBUG: Attempted to create proposal {} for decree {} when proposal {} for decree is already in place".format(p, n, self.current_proposal.p, self.current_proposal.n)
+                print "PROPOSER_DEBUG: Attempted to create proposal for decree {} when proposal {} for decree is already in place".format(n, self.current_proposal.p, self.current_proposal.n)
 
             return False
+
+        # pick a proposal number from the counter, and add one
+        p = self.proposal_counter
+        self.proposal_counter += 1
 
         # create proposal with passed in information
         self.current_proposal = Proposal(p, n, v)
