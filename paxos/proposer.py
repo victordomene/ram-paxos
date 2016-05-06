@@ -26,7 +26,7 @@ class Proposer():
 			return False
 
 		# create proposal with passed in information
-		self.current_proposal = Proposal(n, p, v)
+		self.current_proposal = Proposal(p, n, v)
 
 		# send the prepare message to everybody in the quorum
 		self.prepare(p, n, quorum)
