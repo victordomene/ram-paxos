@@ -52,19 +52,24 @@ class Acceptor():
 
         @return True if promise is made; False otherwise
         """
-        print 'Got proposal'
+        print "GOT PREPARE"
+
         print self.accepted_proposals
-        print n not in self.accepted_proposals
 
         # We have never accepted a proposal for this decree
         if n not in self.accepted_proposals:
-            print 'First proposal number %d for decree %d' % (p, n)
+            print "NOT IN ACCEPTED PROPOSALS"
+
             # had_previous = False so p and v will be ignored
             self.messenger.send_promise(False, 0, n, 0, proposer)
+
+            print "AFTER SEND_PROMISE"
 
             # Also we make a promise never to accept proposal numbered less than p
             assert(n not in self.promises)
             self.promises[n] = p
+
+            print "RETURNING TRUE"
 
             return True
         # We have accepted a proposal but want to override it
@@ -102,20 +107,31 @@ class Acceptor():
 
         @return True if accepted; False otherwise
         """
+        
+        print "IN HANDLE ACCEPT REQUEST"
+
         # We promissed not to accept any proposals less than promises[n]
-        if self.promises[n] > p:
+        if n in self.promises and self.promises[n] > p:
             return False
 
+        print "DID NOT PROMISE"
+
         # If everything is fine, we proceed to accept
-        cur = self.accepted_proposals[n]
-        assert(cur == None or cur.n < n)
+        #cur = self.accepted_proposals[n]
+        #assert(cur == None or cur.n < n)
 
         self.accepted_proposals[n] = Proposal(p, n, v)
 
         # Finally we just send what we accepted to all learners
         # !# Everyone is a learner !!!!2!!
         learners = self.messenger.get_quorum()
+
+        print "GOT LEARNERS: {}".format(learners)
+
         for learner in learners:
+            print learner, p, n, v
             self.messenger.send_accepted(p, n, v, learner)
+
+        print "SENT ACCEPTED TO LEARNERS"
 
         return True

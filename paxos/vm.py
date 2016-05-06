@@ -39,13 +39,11 @@ class VM():
         # get a quorum from the messenger (it is the messenger that keeps
         # track of our destinations)
         quorum = self.messenger.get_quorum()
-        print quorum
+        
+        print "PROPOSING"
 
         # actually propose
         return self.proposer.propose(p, n, v, quorum)
-
-        # This will block until the decree has passed
-#       return self.learner.get_decree(n)
 
     def add_destination(self, name, host, port):
         """

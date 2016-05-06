@@ -53,7 +53,7 @@ message PromiseRequest {
 message RefusePromiseRequest {
 	uint64 proposal_number = 1;
 	uint64 decree_number = 2;
-	string acceptor = 4;
+	string acceptor = 3;
 }
 
 message AcceptedRequest {

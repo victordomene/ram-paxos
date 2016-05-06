@@ -18,24 +18,24 @@ from paxos.messengers import rdtpMessenger
 from paxos.receivers import rdtpReceiver
 from paxos import proposer, acceptor, learner
 
-def initialize_vm(name):
-	return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver)
+def initialize_grpc_vm(name):
+    return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver)
 
 def initialize_rdtp_vm(name):
 	return VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver)
 
 def run():
-	vm = initialize_rdtp_vm("1")
-	vm.serve("localhost", 6666)
+    vm = initialize_grpc_vm("1")
+    vm.add_destination("2", "localhost", 6667)
 
-	#vm.add_destination("2", "localhost", 6667)
+    vm.serve("localhost", 6666)
 
-	try:
-		while True:
-			time.sleep(600)
-			print "Woke up!"
-	except KeyboardInterrupt:
-		vm.stop_server()
+    try:
+        while True:
+            time.sleep(600)
+            print "Woke up!"
+    except KeyboardInterrupt:
+        vm.stop_server()
 
 if __name__ == "__main__":
-	run()
+    run()

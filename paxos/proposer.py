@@ -45,31 +45,42 @@ class Proposer():
         """
 
         # simply sends the RPC call
+        print "PREPARING"
+
         self.messenger.send_prepare(p, n, quorum)
         return True
 
     def _check_promise_count(self):
+
+        print "CHECKING COUNT: {}, {}".format(len(self.promised_acceptors), self.min_quorum_size)
+
         if len(self.promised_acceptors) >= self.min_quorum_size:
             # Proposal already sent
             if self.proposal_sent:
                 return
 
+            print "NOT SENT"
+
             # fetch the information that will be passed to acceptors
-            p = self.current_proposal.number
-            n = self.current_proposal.decree
+            p = self.current_proposal.p
+            n = self.current_proposal.n
+            v = self.current_proposal.v
 
             # the value must be the value corresponding to the highest-numbered
             # proposal we have seen in the quorum
-            v = self.highest_proposal.value
+            if self.highest_proposal is not None:
+                v = self.highest_proposal.v
+
+            print p, n, v
 
             # v could be None, if there was no previous value assigned to
             # this decree by any acceptor. In that case, we may propose
             # whatever we initially wanted to propose
-            if v is None:
-                v = self.current_proposal.value
 
             # send accept requests to a quorum
-            self.messenger.send_accept_request(p, n, v, self.quorum)
+            print "SEND_ACCEPT_REQUEST CALLED"
+
+            self.messenger.send_accept_request(p, n, v, self.promised_acceptors)
 
             self.proposal_sent = True
 
@@ -92,14 +103,21 @@ class Proposer():
         @return XXX
         """
 
+        print "HANDLE PROMISE"
+
         # we must have a current proposal set in order to handle this request
         if self.current_proposal is None:
             return False
 
+        print "NOT NONE PROPOSAL"
+
         # check if the message refers to the current proposal decree; if it
         # does not, we have nothing to do.
-        if n != self.current_proposal.decree:
+        
+        if n != self.current_proposal.n:
             return False
+
+        print "CORRECT DECREE"
 
         # if we had a previous proposal, update our highest_proposal accordingly
         if p is not None:
@@ -111,10 +129,12 @@ class Proposer():
 
             # update the value of the proposal according to the rules. Notice here
             # that p could be None
-            if p > self.highest_proposal.number:
+            if p > self.highest_proposal.p:
                 self.highest_proposal.value = v
                 self.highest_proposal.number = p
                 self.highest_proposal.decree = n
+
+        print "ADD ACCEPTOR TO PROMISED LIST"
 
         # update promised_acceptors and check whether we have enough
         self.promised_acceptors.add(acceptor)
