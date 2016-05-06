@@ -26,7 +26,7 @@ message PrepareRequest {
 message AcceptRequest {
 	uint64 proposal_number = 1;
 	uint64 decree_number = 2;
-	
+
 	// This assumes that the value will always be an integer; this may not
 	// be the case for our workloads. Revisit this.
 	uint64 value = 3;
@@ -38,12 +38,12 @@ message PromiseRequest {
 	// Boolean that indicates whether there was any previously accepted
 	// proposal for this decree
 	bool had_previous = 1;
-	
+
 	// Proposal number and decree number. Notice that decree number is valid
 	// even if had_previous is true.
 	uint64 proposal_number = 2;
 	uint64 decree_number = 3;
-	
+
 	// This assumes that the value will always be an integer; this may not
 	// be the case for our workloads. Revisit this.
 	uint64 value = 4;

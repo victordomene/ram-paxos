@@ -52,33 +52,42 @@ class Acceptor():
 
         @return True if promise is made; False otherwise
         """
+        print 'Got proposal'
+        print self.accepted_proposals
+        print n not in self.accepted_proposals
+
         # We have never accepted a proposal for this decree
         if n not in self.accepted_proposals:
+            print 'First proposal number %d for decree %d' % (p, n)
             # had_previous = False so p and v will be ignored
             self.messenger.send_promise(False, 0, n, 0, proposer)
 
             # Also we make a promise never to accept proposal numbered less than p
-            assert(n not in self.promisses)
-            self.promisses[n] = p
+            assert(n not in self.promises)
+            self.promises[n] = p
 
             return True
         # We have accepted a proposal but want to override it
         elif self.accepted_proposals[n].p < p:
+            print 'Subsequent proposal number %d for decree %d' % (p, n)
+
             highest_accepted = self.accepted_proposals[n]
 
             # had_previous = True so we'll send the current highest accepted value
             self.messenger.send_promise(True, highest_accepted.p, n, highest_accepted.v, proposer)
 
             # Also we make a promise never to accept proposal numbered less than p
-            assert(p > self.promisses[n])
-            self.promisses[n] = p
+            assert(p > self.promises[n])
+            self.promises[n] = p
 
             return True
         else:
+            print 'Refused promise for proposal number %d for decree %d' % (p, n)
+
             # Else we refuse
             self.messenger.send_refuse_proposal(p, n, proposer)
 
-            return False
+            return True
 
     def handle_accept_request(self, p, n, v, proposer):
         """
@@ -93,8 +102,8 @@ class Acceptor():
 
         @return True if accepted; False otherwise
         """
-        # We promissed not to accept any proposals less than promisses[n]
-        if self.promisses[n] > p:
+        # We promissed not to accept any proposals less than promises[n]
+        if self.promises[n] > p:
             return False
 
         # If everything is fine, we proceed to accept

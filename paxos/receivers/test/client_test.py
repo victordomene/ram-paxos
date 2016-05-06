@@ -21,6 +21,8 @@ def initialize_grpc_vm(name):
 
 def run():
 	vm = initialize_grpc_vm("2")
+	vm.serve('localhost', 6667)
+
 	vm.add_destination("1", "localhost", 6666)
 
 	p = 10

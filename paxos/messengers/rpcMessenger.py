@@ -74,6 +74,8 @@ class grpcMessenger(Messenger):
             request = paxos_pb2.PrepareRequest(proposal_number = p,
                     decree_number = n, proposer = self.name)
 
+            print p, n, self.name
+
             # finally send message to this acceptor
             response = stub.handle_prepare(request, TIMEOUT_SECONDS)
 

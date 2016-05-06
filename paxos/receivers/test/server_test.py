@@ -23,6 +23,8 @@ def run():
 	vm = initialize_grpc_vm("1")
 	vm.serve("localhost", 6666)
 
+	vm.add_destination("2", "localhost", 6667)
+
 	try:
 		while True:
 			time.sleep(600)
