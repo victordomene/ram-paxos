@@ -15,13 +15,29 @@ TIMEOUT_SECONDS = 10
 RECEIVER_DEBUG = True
 
 class rdtpHandler(SocketServer.BaseRequestHandler):
+    def usage_args(self, method, num, expected):
+        if RECEIVER_DEBUG:
+            print "RECEIVER_DEBUG: Received a {} request with {} arguments; expected {}".format(method, num, expected)
+
     def handle(self):
         while True:
             status, args = rdtp.recv(self.request)
+            
+            # in this application, the only valid status is 0
+            if status != 0:
+                if RECEIVER_DEBUG:
+                    print "RECEIVER_DEBUG: Received a request with invalid status {}".format(status)
 
-            assert(status == 0)
-            assert(len(args) >= 2)
+                return
 
+            # in this application, all requests must come with more than 2 arguments
+            if len(args) < 2:
+                if RECEIVER_DEBUG:
+                    print "RECEIVER_DEBUG: Received a request lacking arguments: {}".format(args)
+
+                return
+
+            # the first argument must be the method name
             method = args[0]
             
             if RECEIVER_DEBUG:
@@ -29,9 +45,7 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
 
             if method == 'send_prepare':
                 if len(args) != 4:
-                    if RECEIVER_DEBUG:
-                        print "RECEIVER_DEBUG: Received a send_prepare request with incorrect arguments"
-
+                    self.usage_args(method, len(args), 4)
                     return
 
                 p, n, proposer = int(args[1]), int(args[2]), args[3]
@@ -39,9 +53,7 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
 
             elif method == 'send_promise':
                 if len(args) != 6:
-                    if RECEIVER_DEBUG:
-                        print "RECEIVER_DEBUG: Received a send_promise request with incorrect arguments"
-
+                    self.usage_args(method, len(args), 6)
                     return
 
                 had_previous, p, n, v, acceptor = bool(args[1]), int(args[2]), int(args[3]), int(args[4]), str(args[5])
@@ -49,9 +61,7 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
 
             elif method == 'send_accept_request':
                 if len(args) != 5:
-                    if RECEIVER_DEBUG:
-                        print "RECEIVER_DEBUG: Received a send_accept_request request with incorrect arguments"
-
+                    self.usage_args(method, len(args), 5)
                     return
 
                 p, n, v, proposer = int(args[1]), int(args[2]), int(args[3]), str(args[4])
@@ -59,9 +69,7 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
 
             elif method == 'send_refuse_proposal':
                 if len(args) != 4:
-                    if RECEIVER_DEBUG:
-                        print "RECEIVER_DEBUG: Received a send_refuse_proposal request with incorrect arguments"
-
+                    self.usage_args(method, len(args), 4)
                     return
 
                 p, n, acceptor = int(args[1]), int(args[2]), str(args[3])
@@ -69,14 +77,13 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
 
             elif method == 'send_accepted':
                 if len(args) != 5:
-                    if RECEIVER_DEBUG:
-                        print "RECEIVER_DEBUG: Received a send_accepted request with incorrect arguments"
-
+                    self.usage_args(method, len(args), 5)
                     return
 
                 p, n, v, acceptor = int(args[1]), int(args[2]), int(args[3]), str(args[4])
                 self.server.receiver.handle_accepted(p, n, v, acceptor)
 
+            # if none of the methods matched, we have an unknown request...
             else:
                 if RECEIVER_DEBUG:
                     print "RECEIVER_DEBUG: Received an unknown request with method {}".format(method)
@@ -90,7 +97,10 @@ class rdtpReceiver():
 
     def serve(self, host, port):
         self.server = SocketServer.TCPServer((host, port), rdtpHandler, False)
+
+        # !# HACK. Gross. Take this off Gabe. EW.
         self.server.receiver = self
+
         self.server.server_bind()
         self.server.server_activate()
 

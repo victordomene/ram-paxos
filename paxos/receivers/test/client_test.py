@@ -26,9 +26,8 @@ def initialize_rdtp_vm(name):
 
 def run():
     vm = initialize_rdtp_vm("2")
-    vm.add_destination("1", "localhost", 6666)
-
     vm.serve("localhost", 6667)
+    vm.add_destination("1", "localhost", 6666)
 
     time.sleep(2)
 
