@@ -40,8 +40,8 @@ class Acceptor():
         @return True if promise is made; False otherwise
         """
 
-        # We have never accepted a proposal for this decree
-        if n not in self.accepted_proposals:
+        # We have never replied to a prepare request for this decree
+        if n not in self.promises:
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: First proposal {} for decree {}".format(p, n)
 
@@ -54,18 +54,21 @@ class Acceptor():
 
             return True
 
-        # We have accepted a proposal but want to override it
-        elif self.accepted_proposals[n].p < p:
+        # We have made a promise but want to override it
+        elif self.promises[n] < p:
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Subsequent proposal number {} for decree {}".format(p, n)
 
             highest_accepted = self.accepted_proposals[n]
 
-            # had_previous = True so we'll send the current highest accepted value
-            self.messenger.send_promise(True, highest_accepted.p, n, highest_accepted.v, proposer)
+            if highest_accepted:
+                # had_previous = True so we'll send the current highest accepted value
+                self.messenger.send_promise(True, highest_accepted.p, n, highest_accepted.v, proposer)
+            else:
+                # We never accepted anything so we'll just send the empty promise
+                self.messenger.send_promise(False, 0, n, 0, proposer)
 
             # Also we make a promise never to accept proposal numbered less than p
-            assert(p > self.promises[n])
             self.promises[n] = p
 
             return True
@@ -91,7 +94,6 @@ class Acceptor():
 
         @return True if accepted; False otherwise
         """
-        
         # We promised not to accept any proposals less than promises[n]
         if n in self.promises and self.promises[n] > p:
             if ACCEPTOR_DEBUG:
