@@ -27,7 +27,8 @@ def run():
 	n = 1
 	v = 100
 
-	vm.propose_to_quorum(p, n, v)
+	accepted = vm.propose_to_quorum(p, n, v)
+	print 'Value ' + accepted.v + ' was accepted'
 
 if __name__ == "__main__":
 	run()

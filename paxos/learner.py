@@ -51,3 +51,10 @@ class Learner():
 
 
         return True
+
+    def get_decree(self, n):
+        # Spinlock
+        while n not in self.ledger:
+        	pass
+        return self.ledger[n]
+
