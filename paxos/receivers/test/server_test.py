@@ -25,8 +25,7 @@ def initialize_rdtp_vm(name):
 	return VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver)
 
 def run():
-    vm = initialize_grpc_vm("1")
-    vm.add_destination("2", "localhost", 6667)
+    vm = initialize_rdtp_vm("1")
 
     vm.serve("localhost", 6666)
 
