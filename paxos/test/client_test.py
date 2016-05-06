@@ -8,7 +8,7 @@ import time
 # attach the appropriate directories to sys.path
 import sys
 from os import path
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))))
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))))
 
 from paxos.protobufs import paxos_pb2
 from paxos.vm import VM
@@ -29,20 +29,15 @@ def run():
     vm.serve("localhost", 6667)
     vm.add_destination("1", "localhost", 6666)
 
-    time.sleep(2)
-
-    p = 10
-    n = 1
+    n = 0
     v = 100
+    while True:
+        time.sleep(1)
 
-    vm.propose_to_quorum(p, n, v)
+        vm.propose_to_quorum(n, v)
+        n += 1
+        v += 2
 
-    try:
-        while True:
-            time.sleep(600)
-            print "Woke up!"
-    except KeyboardInterrupt:
-        vm.stop_server()
 
 if __name__ == "__main__":
     run()

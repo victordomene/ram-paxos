@@ -18,7 +18,6 @@ class Proposer():
         self.current_proposal = None
         self.highest_proposal = None
         self.promised_acceptors = set()
-        self.proposal_sent = False
 
         self.proposal_counter = 0
 
@@ -68,13 +67,6 @@ class Proposer():
             print "PROPOSER_DEBUG: Checking promise count: {}, when min_quorum_size is {}".format(len(self.promised_acceptors), self.min_quorum_size)
 
         if len(self.promised_acceptors) >= self.min_quorum_size:
-            # Proposal already sent
-            if self.proposal_sent:
-                if PROPOSER_DEBUG:
-                    print "PROPOSER_DEBUG: Attempt to send a proposal that has already been sent"
-
-                return
-
             # fetch the information that will be passed to acceptors
             p = self.current_proposal.p
             n = self.current_proposal.n
@@ -94,7 +86,11 @@ class Proposer():
             # send accept request to the promised acceptors !# ??
             self.messenger.send_accept_request(p, n, v, self.promised_acceptors)
 
-            self.proposal_sent = True
+            # reset the state kept by proposer
+            self.current_proposal = None
+            self.highest_proposal = None
+            self.promised_acceptors = set()
+
 
     def handle_promise(self, had_previous, p, n, v, acceptor):
         """

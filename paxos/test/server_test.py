@@ -8,7 +8,7 @@ import time
 # attach the appropriate directories to sys.path
 import sys
 from os import path
-sys.path.append(path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__file__))))))
+sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))))
 
 from paxos.protobufs import paxos_pb2
 from paxos.vm import VM
