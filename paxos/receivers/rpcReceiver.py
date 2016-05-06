@@ -29,7 +29,7 @@ class grpcReceiver(Receiver):
 
 	def stop_server(self):
 		self.server.stop(0)
-	
+
 	def handle_prepare(self, request, context):
 		p = request.proposal_number
 		n = request.decree_number

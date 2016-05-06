@@ -14,13 +14,18 @@ from paxos.protobufs import paxos_pb2
 from paxos.vm import VM
 from paxos.messengers import rpcMessenger
 from paxos.receivers import rpcReceiver
+from paxos.messengers import rdtpMessenger
+from paxos.receivers import rdtpReceiver
 from paxos import proposer, acceptor, learner
 
 def initialize_grpc_vm(name):
 	return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver)
 
+def initialize_rdtp_vm(name):
+	return VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver)
+
 def run():
-	vm = initialize_grpc_vm("2")
+	vm = initialize_rdtp_vm("2")
 	vm.serve('localhost', 6667)
 
 	vm.add_destination("1", "localhost", 6666)
