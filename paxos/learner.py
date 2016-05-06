@@ -14,6 +14,10 @@ class Learner():
 	def __init__(self, messenger):
 		self.messenger = messenger
 		self.ledger = {}
+
+		self.accepted = {}
+
+		self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 		return
 
 	@property
@@ -22,6 +26,9 @@ class Learner():
 		The messenger instance used by this acceptor.
 		"""
 		return self.messenger
+
+    def write_to_ledger(self, p, n, v):
+        self.ledger[n] = Proposal(p, n, v)
 
 	def handle_accepted(self, p, n, v, acceptor):
 		"""
@@ -34,6 +41,13 @@ class Learner():
 
 		Does not return.
 		"""
-		self.ledger[n] = Proposal(p, n, v)
+        if n not in self.accepted:
+		    self.accepted[n, p] = set()
+
+		self.accepted[n, p].add(acceptor)
+
+        if len(self.accepted[n, p]) >= self.min_quorum_size:
+        	self.write_to_ledger(p, n, v)
+
 
 		return True

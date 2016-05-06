@@ -17,7 +17,7 @@ class Proposer():
 		self.highest_proposal = None
 		self.promised_acceptors = set()
 
-		self.quorum_size = None
+		self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 		return
 
 	def propose(self, p, n, v, quorum):
@@ -48,7 +48,7 @@ class Proposer():
 		return True
 
 	def _check_promise_count(self):
-		if len(self.promised_acceptors) >= self.quorum_size:
+		if len(self.promised_acceptors) >= self.min_quorum_size:
 			# fetch the information that will be passed to acceptors
 			p = self.current_proposal.number
 			n = self.current_proposal.decree
