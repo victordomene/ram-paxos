@@ -22,7 +22,7 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         while True:
             status, args = rdtp.recv(self.request)
-            
+
             # in this application, the only valid status is 0
             if status != 0:
                 if RECEIVER_DEBUG:
@@ -39,7 +39,7 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
 
             # the first argument must be the method name
             method = args[0]
-            
+
             if RECEIVER_DEBUG:
                 print "RECEIVER_DEBUG: Received a request with method {} and arguments {}".format(method, args[1:])
 
@@ -56,7 +56,7 @@ class rdtpHandler(SocketServer.BaseRequestHandler):
                     self.usage_args(method, len(args), 6)
                     return
 
-                had_previous, p, n, v, acceptor = bool(args[1]), int(args[2]), int(args[3]), int(args[4]), str(args[5])
+                had_previous, p, n, v, acceptor = 'True' == args[1], int(args[2]), int(args[3]), int(args[4]), str(args[5])
                 self.server.receiver.handle_promise(had_previous, p, n, v, acceptor)
 
             elif method == 'send_accept_request':
@@ -100,6 +100,8 @@ class rdtpReceiver():
 
         # !# HACK. Gross. Take this off Gabe. EW.
         self.server.receiver = self
+
+        self.server.allow_reuse_address = True
 
         self.server.server_bind()
         self.server.server_activate()
