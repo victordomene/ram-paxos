@@ -4,30 +4,33 @@ RPC Protocol (gRPC).
 """
 
 import SocketServer
-import rdtp
+import thread
+
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from rdtp import rdtp
 
 TIMEOUT_SECONDS = 10
 RECEIVER_DEBUG = True
 
 class rdtpHandler(SocketServer.BaseRequestHandler):
     def handle(self):
+        print "got connection"
+
         while True:
-            try:
-                status, args = rdtp.recv(self.request)
-            except rdtp.ClientDead:
-                continue
+            status, args = rdtp.recv(self.request)
 
             assert(status == 0)
             assert(len(args) >= 2)
 
             method = args[0]
 
+            print 'Received rdtp.recv with method:' + method
             if method == 'send_prepare':
                 assert(len(args) == 4)
                 p, n, proposer = int(args[1]), int(args[2]), args[3]
                 self.server.handle_prepare(p, n, proposer)
-
-
 
 
 class rdtpReceiver():
@@ -42,6 +45,10 @@ class rdtpReceiver():
         self.server.server_bind()
         self.server.server_activate()
 
+        print 'Started listening on %s:%d' % (host, port)
+        thread.start_new_thread(self.serve_forever, ())
+
+    def serve_forever(self):
         self.server.serve_forever()
 
     def handle_prepare(self, p, n, proposer):

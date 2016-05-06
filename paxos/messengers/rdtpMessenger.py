@@ -1,7 +1,13 @@
 """
 This module provides an implementation of the Messenger class using RDTP.
 """
-import rdtp
+import socket
+from time import sleep
+
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from rdtp import rdtp
 
 TIMEOUT_SECONDS = 10
 
@@ -27,6 +33,16 @@ class rdtpMessenger():
     def get_quorum(self):
         return self.destinations.keys()
 
+    def connect(self, host, port):
+        while True:
+            try:
+                print 'Trying to connect to %s:%d' % (host, port)
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.connect((host, port))
+                return sock
+            except:
+                sleep(1)
+
     def add_destination(self, name, host, port):
         """
         Adds a host/port combination to the list of possible destinations
@@ -43,12 +59,12 @@ class rdtpMessenger():
 
         @return True if successfully added; False otherwise
         """
-
-        stub = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        stub.connect((host, port))
+        # This will block until we can connect
+        self.connect(host, port)
+        print 'Connected!'
 
         # simply change the entry; do not check if it already exists
-        self.destinations[name] = stub
+        self.destinations[name] = socket
 
         # function always succeeds
         return True

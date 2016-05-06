@@ -28,7 +28,7 @@ def run():
 	vm = initialize_rdtp_vm("1")
 	vm.serve("localhost", 6666)
 
-	vm.add_destination("2", "localhost", 6667)
+	#vm.add_destination("2", "localhost", 6667)
 
 	try:
 		while True:
