@@ -96,7 +96,7 @@ class grpcMessenger(Messenger):
 
 		return True
 
-	def send_promise(self, p, n, v, proposer):
+    def send_promise(self, had_previous, p, n, v, proposer):
 		# fetch the stub for the proposer
 		stub = self._fetch_stub(proposer)
 
@@ -104,7 +104,7 @@ class grpcMessenger(Messenger):
 			return False
 
 		# create the appropriate request
-		request = paxos_pb2.PromiseRequest(proposal_number = p,
+		request = paxos_pb2.PromiseRequest(had_previous = had_previous, proposal_number = p,
 				decree_number = n, highest_voted_value = v)
 
 		# finally send promise back to proposer

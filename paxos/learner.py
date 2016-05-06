@@ -13,8 +13,7 @@ class Learner():
 
 	def __init__(self, messenger):
 		self.messenger = messenger
-		self.decree_to_value = {}
-		self.proposal_and_decree_to_stats = {}
+		self.ledger = {}
 		return
 
 	@property
@@ -23,27 +22,6 @@ class Learner():
 		The messenger instance used by this acceptor.
 		"""
 		return self.messenger
-
-	@property
-	def decree_to_value(self):
-		"""
-		The current state of the "law book", as seen from this learner's
-		perspective. It is simply a dictionary that maps decree numbers to
-		the values that were accepted.
-		"""
-		return self.decree_to_value
-
-	@property
-	def proposal_and_decree_to_stats(self):
-		"""
-		A dictionary that maps a tuple of (proposal number, decree number) to
-		the statistics regarding that proposal number: how many acceptors
-		voted for it and how many did not vote yet.
-
-		This will be used, later, to verify whether a value has been agreed
-		upon for this decree.
-		"""
-		return self.proposal_and_decree_to_stats
 
 	def handle_accepted(self, p, n, v, acceptor):
 		"""
@@ -56,4 +34,6 @@ class Learner():
 
 		Does not return.
 		"""
+		self.ledger[n] = Proposal(p, n, v)
+
 		return True
