@@ -62,7 +62,7 @@ class grpcMessenger(Messenger):
         # function always succeeds
         return True
 
-    def send_prepare(self, p, n, quorum):
+    def send_prepare(self, p, n, quorum, callback):
         for acceptor in quorum:
             # fetch the stub for each of the acceptors
             stub = self._fetch_stub(acceptor)
@@ -74,20 +74,16 @@ class grpcMessenger(Messenger):
             request = paxos_pb2.PrepareRequest(proposal_number = p,
                     decree_number = n, proposer = self.name)
 
-            print "SENDING PREPARE"
-
             # finally send message to this acceptor
             future = stub.handle_prepare.future(request, TIMEOUT_SECONDS)
-            future.add_done_callback()
+
+            # attach callback
+            future.add_done_callback(callback)
 
         return True
 
-    def send_accept_request(self, p, n, v, quorum):
-        print "ACCEPT REQUEST"
-
+    def send_accept(self, p, n, v, quorum):
         for acceptor in quorum:
-            print acceptor
-
             # fetch the stub for each of the acceptors
             stub = self._fetch_stub(acceptor)
 
@@ -98,13 +94,12 @@ class grpcMessenger(Messenger):
             request = paxos_pb2.AcceptRequest(proposal_number = p,
                     decree_number = n, value = v, proposer = self.name)
 
-            print "SENDING ACCEPT REQUEST"
-
             # finally send message to this acceptor
-            response = stub.handle_accept_request.future(request, TIMEOUT_SECONDS)
+            future = stub.handle_accept.future(request, TIMEOUT_SECONDS)
 
         return True
 
+    # SHOULD NOT BE USED
     def send_promise(self, had_previous, p, n, v, proposer):
         # fetch the stub for the proposer
         stub = self._fetch_stub(proposer)
@@ -113,16 +108,15 @@ class grpcMessenger(Messenger):
             return False
 
         # create the appropriate request
-        print had_previous, p, n, v, self.name
         request = paxos_pb2.PromiseRequest(had_previous = had_previous, proposal_number = p,
                 decree_number = n, value = v, acceptor = self.name)
 
         # finally send promise back to proposer
         response = stub.handle_promise.future(request, TIMEOUT_SECONDS)
-        print "SENT PROMISE THING"
 
         return True
 
+    # SHOULD NOT BE USED
     def send_refuse_proposal(self, p, n, proposer):
         # fetch the stub for the proposer
         stub = self._fetch_stub(proposer)
@@ -139,9 +133,7 @@ class grpcMessenger(Messenger):
 
         return True
 
-    def send_accepted(self, p, n, v, learner):
-        print "SENDING ACCEPTED" 
-
+    def send_learn(self, p, n, v, learner):
         # fetch the stub for the learner
         stub = self._fetch_stub(learner)
 
@@ -149,13 +141,10 @@ class grpcMessenger(Messenger):
             return False
 
         # create the appropriate request
-        request = paxos_pb2.AcceptedRequest(proposal_number = p,
+        request = paxos_pb2.LearnRequest(proposal_number = p,
                 decree_number = n, value = v, acceptor = self.name)
 
-        print "ACTUALLY SENDING THE ACCEPTED"
-
         # finally send message to learner
-        response = stub.handle_accepted.future(request, TIMEOUT_SECONDS)
+        response = stub.handle_learn.future(request, TIMEOUT_SECONDS)
 
-        print "SENT THIS CRPA OMGOMGOGMOG"
         return True

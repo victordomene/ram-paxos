@@ -46,7 +46,7 @@ class Acceptor():
                 print "ACCEPTOR_DEBUG: First proposal {} for decree {}".format(p, n)
 
             # Also we make a promise never to accept proposal numbered less than p
-            assert(n not in self.promises)
+            # assert(n not in self.promises)
             self.promises[n] = p
 
             return True, None
@@ -106,6 +106,6 @@ class Acceptor():
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Reported acceptance of proposal {} and decree {} to learner {}".format(p, n, learner)
 
-            self.messenger.send_accepted(p, n, v, learner)
+            self.messenger.send_learn(p, n, v, learner)
 
         return True

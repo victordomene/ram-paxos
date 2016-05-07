@@ -28,7 +28,7 @@ class Proposer():
         # cannot propose if we are currently proposing something else
         if self.current_proposal is not None:
             if PROPOSER_DEBUG:
-                print "PROPOSER_DEBUG: Attempted to create proposal for decree {} when proposal {} for decree is already in place".format(n, self.current_proposal.p, self.current_proposal.n)
+                print "PROPOSER_DEBUG: Attempted to create proposal for decree {} when proposal {} for decree {} is already in place".format(n, self.current_proposal.p, self.current_proposal.n)
 
             return False
 
@@ -55,7 +55,7 @@ class Proposer():
         """
 
         # simply sends the RPC call
-        self.messenger.send_prepare(p, n, quorum)
+        self.messenger.send_prepare(p, n, quorum, self.handle_promise)
 
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Proposal {} for decree {} initiated".format(p, n)
@@ -84,7 +84,7 @@ class Proposer():
                 print "PROPOSER_DEBUG: Proposal {} with value {} sent to promised acceptors: {}".format(p, v, self.promised_acceptors)
 
             # send accept request to the promised acceptors !# ??
-            self.messenger.send_accept_request(p, n, v, self.promised_acceptors)
+            self.messenger.send_accept(p, n, v, self.promised_acceptors)
 
             # reset the state kept by proposer
             self.current_proposal = None
@@ -110,8 +110,23 @@ class Proposer():
 
         @return XXX
         """
+
         response = future.result()
-        had_previous, p, n, v, acceptor = 
+
+        # parse the response
+        promised = response.promised
+        
+        if not promised:
+            self.current_proposal = None
+            self.highest_proposal = None
+            self.promised_acceptors = set()
+            return False
+
+        had_previous = response.had_previous
+        p = response.proposal_number
+        n = response.decree_number
+        v = response.value
+        acceptor = response.acceptor
 
         # we must have a current proposal set in order to handle this request
         if self.current_proposal is None:
