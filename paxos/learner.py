@@ -4,7 +4,7 @@ This module implements a learner, using the specified messenger.
 
 from proposal import Proposal
 
-LEARNER_DEBUG = True
+LEARNER_DEBUG = False
 
 class Learner():
     """
@@ -62,4 +62,12 @@ class Learner():
         while n not in self.ledger:
         	pass
         return self.ledger[n]
+
+    def handle_print_ledger(self):
+        print "##########################"
+        print 'Learner {} printing Ledger'.format(self.messenger.name)
+
+        for decree in self.ledger:
+            print "Decree: {}, Value: {}".format(decree, self.ledger[decree].v)
+
 

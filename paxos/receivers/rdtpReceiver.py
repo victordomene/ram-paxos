@@ -70,7 +70,7 @@ class rdtpReceiver():
                         return
 
                     # in this application, all requests must come with more than 2 arguments
-                    if len(args) < 2:
+                    if len(args) < 1:
                         if RECEIVER_DEBUG:
                             print "RECEIVER_DEBUG: Received a request lacking arguments: {}".format(args)
 
@@ -121,6 +121,10 @@ class rdtpReceiver():
 
                         p, n, v, acceptor = int(args[1]), int(args[2]), int(args[3]), str(args[4])
                         self.handle_accepted(p, n, v, acceptor)
+                    # This should be sent by an outside client who's not part of paxos
+                    elif method == 'print_ledger':
+                        print 'Will print ledger'
+                        self.handle_print_ledger()
 
                     # if none of the methods matched, we have an unknown request...
                     else:
@@ -163,3 +167,9 @@ class rdtpReceiver():
             print "RECEIVER_DEBUG: AcceptedRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
         return self.learner.handle_accepted(p, n, v, acceptor)
+
+    def handle_print_ledger(self):
+        if RECEIVER_DEBUG:
+            print "RECEIVER_DEBUG: Printing ledger"
+
+        return self.learner.handle_print_ledger()
