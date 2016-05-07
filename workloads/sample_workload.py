@@ -63,7 +63,7 @@ def proposer_entrypoint(name, network):
 
     # sleep a little bit before trying to send proposals
     # (cheating for bootstrap)
-    time.sleep(5)
+    time.sleep(2)
 
     # decree number and value; these will change
     n = 0
