@@ -35,8 +35,6 @@ class grpcReceiver(Receiver):
         n = request.decree_number
         proposer = request.proposer
 
-        print "HANDLE PREPARE"
-
         if RECEIVER_DEBUG:
             print "PrepareRequest received: p = {}, n = {}, proposer = {}".format(p, n, proposer)
 
@@ -50,14 +48,10 @@ class grpcReceiver(Receiver):
         v = request.value
         proposer = request.proposer
 
-        print "HANDLE ACCEPT"
-
         if RECEIVER_DEBUG:
             print "AcceptRequest received: p = {}, n = {}, v = {}, proposer = {}".format(p, n, v, proposer)
 
         success = self.acceptor.handle_accept_request(p, n, v, proposer)
-
-        print "SUCCESSFULLY HANDLED ACCEPT"
 
         return paxos_pb2.OKResponse(response = True)
 
@@ -78,11 +72,7 @@ class grpcReceiver(Receiver):
         if RECEIVER_DEBUG:
             print "PromiseRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
-        print "HANDLING THE PROMISE"
-
-        success = self.proposer.handle_promise(had_previous, p, n, v, acceptor)
-
-        print "HANDLED THE PROMISE"
+        success = self.proposer.handle_promise(p, n, v, acceptor)
 
         return paxos_pb2.OKResponse(response = True)
 
@@ -99,18 +89,14 @@ class grpcReceiver(Receiver):
         return paxos_pb2.OKResponse(response = True)
 
     def handle_accepted(self, request, context):
-        print "HANDLE ACCEPTED FINALLY OMGOMGOMGOMG"
-
         p = request.proposal_number
         n = request.decree_number
         v = request.value
         acceptor = request.acceptor
 
-        print p, n, v, acceptor
-
         if RECEIVER_DEBUG:
             print "AcceptedRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
-        success = self.learner.handle_accept_request(p, n, v)
+        success = self.learner.handle_accepted(p, n, v, acceptor)
 
         return paxos_pb2.OKResponse(response = True)

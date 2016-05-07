@@ -23,22 +23,27 @@ NETWORK_SIZE = 10
 HOST = "localhost"
 START_PORT = 6666
 
-def start_rdtp_vm(name, network):
-    """
-    Starts an RDTP virtual machine instance with a given name and with
-    a given network.
+def initialize_rdtp_vm(name):
+    return VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver)
 
+def initialize_grpc_vm(name):
+    return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver)
+
+def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
+    """
+    Starts a virtual machine with a given initializer.
     Already starts serving.
 
     @param name: the name of the machine that will be started
     @param network: a dictionary containing information on the machines in
     the network
+    @param initialize_vm: an initializer for the VM
 
     @return: The instance of the RDTP virtual machine
     """
 
     # initialize the virtual machine with my name
-    vm = VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver)
+    vm = initialize_vm(name)
 
     # fetch the host/port information from the network for me
     host, port = network[name]
@@ -48,6 +53,10 @@ def start_rdtp_vm(name, network):
     
     # add other machines
     for friend_name, (friend_host, friend_port) in network.iteritems():
+        # !# should we send it to ourselves?
+        if friend_name == name:
+            continue
+
         vm.add_destination(friend_name, friend_host, friend_port)
 
     return vm 
@@ -59,7 +68,7 @@ def proposer_entrypoint(name, network):
     This must simply call start_rdtp_vm with our name and network,  
     """
     # start an rdtp VM with our name and start serving 
-    vm = start_rdtp_vm(name, network)
+    vm = start_vm(name, network, initialize_grpc_vm)
 
     # sleep a little bit before trying to send proposals
     # (cheating for bootstrap)
@@ -82,7 +91,7 @@ def proposer_entrypoint(name, network):
 
 def replicas_entrypoint(name, network):
     # start an rdtp VM with our name and start serving
-    vm = start_rdtp_vm(name, network)
+    vm = start_vm(name, network, initialize_grpc_vm)
 
     # simply sleep forever, the server will handle the
     # necessary requests

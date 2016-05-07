@@ -94,7 +94,7 @@ class Proposer():
             self.init_proposal()
 
 
-    def handle_promise(self, had_previous, p, n, v, acceptor):
+    def handle_promise(self, p, n, v, acceptor):
         """
         Handles a promise given by an acceptor. This must check the @param v
         (see below) and update our current proposal accordingly: the proposer
@@ -129,11 +129,13 @@ class Proposer():
 
             return False
 
-        if PROPOSER_DEBUG:
-            print "PROPOSER_DEBUG: Promise received for decree {} up to proposal {} with value {}, from acceptor {}".format(n, p, v, acceptor)
-
         # if we had a previous proposal, update our highest_proposal accordingly
-        if had_previous:
+        if p is not None:
+            assert(v is not None)
+
+            if PROPOSER_DEBUG:
+                print "PROPOSER_DEBUG: Promise received for decree {} up to proposal {} with value {}, from acceptor {}".format(n, p, v, acceptor)
+
             # we may need to initiate the highest proposal here
             if self.highest_proposal is None:
                 self.highest_proposal = Proposal(p, n, v)
@@ -144,9 +146,9 @@ class Proposer():
                 if PROPOSER_DEBUG:
                     print "PROPOSER_DEBUG: Updating highest_proposal to {} with value {}".format(p, v)
 
-                self.highest_proposal.value = v
-                self.highest_proposal.number = p
-                self.highest_proposal.decree = n
+                self.highest_proposal.v = v
+                self.highest_proposal.p = p
+                self.highest_proposal.n = n
 
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Added acceptor {} to list of promised acceptors".format(acceptor)

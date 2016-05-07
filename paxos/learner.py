@@ -51,7 +51,6 @@ class Learner():
         if len(self.accepted[n, p]) >= self.min_quorum_size:
             self.write_to_ledger(p, n, v)
 
-
         return True
 
     def get_decree(self, n):

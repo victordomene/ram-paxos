@@ -94,6 +94,7 @@ class Acceptor():
 
         @return True if accepted; False otherwise
         """
+
         # We promised not to accept any proposals less than promises[n]
         if n in self.promises and self.promises[n] > p:
             if ACCEPTOR_DEBUG:
@@ -102,6 +103,7 @@ class Acceptor():
             return False
 
         # If everything is fine, we proceed to accept
+        # !# seems like there is an issue with < here...
         if n in self.accepted_proposals:
             assert(self.accepted_proposals[n].p < p)
 
