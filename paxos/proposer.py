@@ -4,7 +4,7 @@ This module implements a proposer, using the specified messenger.
 
 from proposal import Proposal
 
-PROPOSER_DEBUG = True
+PROPOSER_DEBUG = False
 
 class Proposer():
     """

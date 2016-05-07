@@ -4,7 +4,7 @@ This module implements an acceptor, using the specified messenger.
 
 from proposal import Proposal
 
-ACCEPTOR_DEBUG = True
+ACCEPTOR_DEBUG = False
 
 class Acceptor():
     """

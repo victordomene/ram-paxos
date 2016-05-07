@@ -13,7 +13,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from rdtp import rdtp
 
 TIMEOUT_SECONDS = 10
-RECEIVER_DEBUG = True
+RECEIVER_DEBUG = False
 
 MAX_PENDING_CLIENTS = 50
 
