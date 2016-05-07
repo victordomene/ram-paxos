@@ -96,6 +96,7 @@ class rdtpReceiver():
                             return
 
                         had_previous, p, n, v, acceptor = 'True' == args[1], int(args[2]), int(args[3]), int(args[4]), str(args[5])
+
                         self.handle_promise(had_previous, p, n, v, acceptor)
 
                     elif method == 'send_accept_request':
@@ -154,7 +155,7 @@ class rdtpReceiver():
         if RECEIVER_DEBUG:
             print "RECEIVER_DEBUG: PromiseRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
-        return self.proposer.handle_promise(had_previous, p, n, v, acceptor)
+        return self.proposer.handle_promise(p, n, v, acceptor)
 
     def handle_refuse_promise(self, p, n, acceptor):
         if RECEIVER_DEBUG:

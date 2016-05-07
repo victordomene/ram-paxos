@@ -37,7 +37,7 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
     @param name: the name of the machine that will be started
     @param network: a dictionary containing information on the machines in
     the network
-    @param initialize_vm: an initializer for the VM
+    @param initialize_vm: an initializer for the VM; by default, RDTP
 
     @return: The instance of the RDTP virtual machine
     """
@@ -65,10 +65,10 @@ def proposer_entrypoint(name, network):
     """
     Thread entrypoint for a proposer.
 
-    This must simply call start_rdtp_vm with our name and network,  
+    This must simply call start_rdtp_vm with our name and network. 
     """
     # start an rdtp VM with our name and start serving 
-    vm = start_vm(name, network, initialize_grpc_vm)
+    vm = start_vm(name, network)
 
     # sleep a little bit before trying to send proposals
     # (cheating for bootstrap)
@@ -91,7 +91,7 @@ def proposer_entrypoint(name, network):
 
 def replicas_entrypoint(name, network):
     # start an rdtp VM with our name and start serving
-    vm = start_vm(name, network, initialize_grpc_vm)
+    vm = start_vm(name, network)
 
     # simply sleep forever, the server will handle the
     # necessary requests
