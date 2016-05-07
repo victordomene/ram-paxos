@@ -45,14 +45,11 @@ class Acceptor():
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: First proposal {} for decree {}".format(p, n)
 
-            # had_previous = False so p and v will be ignored
-            self.messenger.send_promise(False, 0, n, 0, proposer)
-
             # Also we make a promise never to accept proposal numbered less than p
             assert(n not in self.promises)
             self.promises[n] = p
 
-            return True
+            return True, None
 
         # We have made a promise but want to override it
         elif self.promises[n] < p:
@@ -61,27 +58,18 @@ class Acceptor():
 
             highest_accepted = self.accepted_proposals[n]
 
-            if highest_accepted:
-                # had_previous = True so we'll send the current highest accepted value
-                self.messenger.send_promise(True, highest_accepted.p, n, highest_accepted.v, proposer)
-            else:
-                # We never accepted anything so we'll just send the empty promise
-                self.messenger.send_promise(False, 0, n, 0, proposer)
-
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = p
 
-            return True
+            return True, highest_accepted
         else:
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Refused promise for proposal number {} for decree {}".format(p, n)
 
             # Else we refuse
-            self.messenger.send_refuse_proposal(p, n, proposer)
+            return False, None
 
-            return True
-
-    def handle_accept_request(self, p, n, v, proposer):
+    def handle_accept(self, p, n, v, proposer):
         """
         Handles an accept request that has been received. This will always
         succeed, unless we promised a proposal with a higher number that we

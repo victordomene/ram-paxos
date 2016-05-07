@@ -40,11 +40,17 @@ class grpcReceiver(Receiver):
         if RECEIVER_DEBUG:
             print "PrepareRequest received: p = {}, n = {}, proposer = {}".format(p, n, proposer)
 
-        success = self.acceptor.handle_prepare(p, n, proposer)
+        success, p = self.acceptor.handle_prepare(p, n, proposer)
 
-        return paxos_pb2.OKResponse(response = True)
+        if p is not None:
+            assert(n == p.n)
+            return paxos_pb2.PromiseResponse(promised = success, had_previous = True,
+                    proposal_number = p.p, value = p.v, acceptor = self.name)
+        else:
+            return paxos_pb2.PromiseResponse(promised = success, had_previous = False,
+                    proposal_number = p, value = 0, acceptor = self.name)
 
-    def handle_accept_request(self, request, context):
+    def handle_accept(self, request, context):
         p = request.proposal_number
         n = request.decree_number
         v = request.value
@@ -55,51 +61,15 @@ class grpcReceiver(Receiver):
         if RECEIVER_DEBUG:
             print "AcceptRequest received: p = {}, n = {}, v = {}, proposer = {}".format(p, n, v, proposer)
 
-        success = self.acceptor.handle_accept_request(p, n, v, proposer)
+        success = self.acceptor.handle_accept(p, n, v, proposer)
 
         print "SUCCESSFULLY HANDLED ACCEPT"
 
-        return paxos_pb2.OKResponse(response = True)
+        return paxos_pb2.OKResponse(response = success)
 
-    def handle_promise(self, request, context):
-        had_previous = request.had_previous
 
-        # handle the case where we had no previous value set
-        if had_previous:
-            p = request.proposal_number
-            v = request.value
-        else:
-            p = None
-            v = None
-
-        n = request.decree_number
-        acceptor = request.acceptor
-
-        if RECEIVER_DEBUG:
-            print "PromiseRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
-
-        print "HANDLING THE PROMISE"
-
-        success = self.proposer.handle_promise(had_previous, p, n, v, acceptor)
-
-        print "HANDLED THE PROMISE"
-
-        return paxos_pb2.OKResponse(response = True)
-
-    def handle_refuse_promise(self, request, context):
-        p = request.proposal_number
-        n = request.decree_number
-        acceptor = request.acceptor
-
-        if RECEIVER_DEBUG:
-            print "RefusePromiseRequest received: p = {}, n = {}, acceptor = {}".format(p, n, acceptor)
-
-        success = self.proposer.handle_refuse_promise(p, n, acceptor)
-
-        return paxos_pb2.OKResponse(response = True)
-
-    def handle_accepted(self, request, context):
-        print "HANDLE ACCEPTED FINALLY OMGOMGOMGOMG"
+    def handle_learn(self, request, context):
+        print "HANDLE LEARN FINALLY OMGOMGOMGOMG"
 
         p = request.proposal_number
         n = request.decree_number
@@ -111,6 +81,6 @@ class grpcReceiver(Receiver):
         if RECEIVER_DEBUG:
             print "AcceptedRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
-        success = self.learner.handle_accept_request(p, n, v)
+        success = self.learner.handle_learn(p, n, v)
 
-        return paxos_pb2.OKResponse(response = True)
+        return paxos_pb2.OKResponse(response = success)

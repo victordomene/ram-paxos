@@ -77,7 +77,8 @@ class grpcMessenger(Messenger):
             print "SENDING PREPARE"
 
             # finally send message to this acceptor
-            response = stub.handle_prepare.future(request, TIMEOUT_SECONDS)
+            future = stub.handle_prepare.future(request, TIMEOUT_SECONDS)
+            future.add_done_callback()
 
         return True
 

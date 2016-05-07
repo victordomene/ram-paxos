@@ -28,7 +28,7 @@ class Learner():
 
         self.ledger[n] = Proposal(p, n, v)
 
-    def handle_accepted(self, p, n, v, acceptor):
+    def handle_learn(self, p, n, v, acceptor):
         """
         Handles the event of an acceptor voting for a proposal.
 
@@ -62,4 +62,3 @@ class Learner():
         while n not in self.ledger:
         	pass
         return self.ledger[n]
-

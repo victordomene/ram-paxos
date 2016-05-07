@@ -92,7 +92,7 @@ class Proposer():
             self.promised_acceptors = set()
 
 
-    def handle_promise(self, had_previous, p, n, v, acceptor):
+    def handle_promise(self, future):
         """
         Handles a promise given by an acceptor. This must check the @param v
         (see below) and update our current proposal accordingly: the proposer
@@ -110,6 +110,8 @@ class Proposer():
 
         @return XXX
         """
+        response = future.result()
+        had_previous, p, n, v, acceptor = 
 
         # we must have a current proposal set in order to handle this request
         if self.current_proposal is None:
