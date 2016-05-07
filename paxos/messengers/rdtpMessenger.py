@@ -15,20 +15,24 @@ class rdtpMessenger():
     def __init__(self, name):
         self.name = name
         self.destinations = {}
+        self.sockets = {}
         return
 
     def _fetch_stub(self, name):
         # fetch the stub for the proposer
+        if name in self.sockets:
+        	return self.sockets[name]
+
         try:
-            stub = self.destinations[name]
+            host, port = self.destinations[name]
+            self.sockets[name] = self.connect(host, port)
+            return self.sockets[name]
         except KeyError:
-            print "_fetch_stub: could not find stub for {}".format(name)
+            print "_fetch_stub: Destination not found"
             return None
         except:
             print "_fetch_stub: unknown error"
             return None
-
-        return stub
 
     def get_quorum(self):
         return self.destinations.keys()
@@ -59,15 +63,22 @@ class rdtpMessenger():
 
         @return True if successfully added; False otherwise
         """
-        # This will block until we can connect
-        sock = self.connect(host, port)
-        print 'Connected!'
 
         # simply change the entry; do not check if it already exists
-        self.destinations[name] = sock
+        self.destinations[name] = (host, port)
 
         # function always succeeds
         return True
+
+    # Wrapper to rdtp.send
+    def try_send(self, name, stub, *args):
+        try:
+            rdtp.send(stub, *args)
+        except rdtp.ServerDead:
+            del self.sockets[name]
+
+            new_stub = self._fetch_stub(name)
+            rdtp.send(new_stub, *args)
 
     def send_prepare(self, p, n, quorum):
         for acceptor in quorum:
@@ -78,7 +89,7 @@ class rdtpMessenger():
                 return False
 
             # create the appropriate request
-            rdtp.send(stub, 0, "send_prepare", str(p), str(n), self.name)
+            self.try_send(acceptor, stub, 0, "send_prepare", str(p), str(n), self.name)
 
         return True
 
@@ -91,7 +102,7 @@ class rdtpMessenger():
                 return False
 
             # create the appropriate request
-            rdtp.send(stub, 0, "send_accept_request", str(p), str(n), str(v), self.name)
+            self.try_send(acceptor, stub, 0, "send_accept_request", str(p), str(n), str(v), self.name)
 
         return True
 
@@ -103,7 +114,7 @@ class rdtpMessenger():
             return False
 
         # create the appropriate request
-        rdtp.send(stub, 0, "send_promise", str(had_previous), str(p), str(n), str(v), self.name)
+        self.try_send(proposer, stub, 0, "send_promise", str(had_previous), str(p), str(n), str(v), self.name)
 
         return True
 
@@ -115,7 +126,7 @@ class rdtpMessenger():
             return False
 
         # create the appropriate request
-        rdtp.send(stub, 0, "send_refuse_proposal", str(p), str(n), self.name)
+        self.try_send(proposer, stub, 0, "send_refuse_proposal", str(p), str(n), self.name)
 
         return True
 
@@ -127,6 +138,6 @@ class rdtpMessenger():
             return False
 
         # create the appropriate request
-        rdtp.send(stub, 0, "send_accepted", str(p), str(n), str(v), self.name)
+        self.try_send(learner, stub, 0, "send_accepted", str(p), str(n), str(v), self.name)
 
         return True

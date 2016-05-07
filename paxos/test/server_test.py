@@ -30,12 +30,9 @@ def run():
     vm.serve("localhost", 6666)
     vm.add_destination("2", "localhost", 6667)
 
-    try:
-        while True:
-            time.sleep(600)
-            print "Woke up!"
-    except KeyboardInterrupt:
-        vm.stop_server()
+    while True:
+        time.sleep(600)
+        print "Woke up!"
 
 if __name__ == "__main__":
     run()

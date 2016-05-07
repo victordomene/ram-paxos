@@ -15,22 +15,26 @@ class Proposer():
 
     def __init__(self, messenger):
         self.messenger = messenger
-        self.current_proposal = None
-        self.highest_proposal = None
-        self.promised_acceptors = set()
 
         self.proposal_counter = 0
 
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
+
+        self.init_proposal()
         return
+
+    def init_proposal(self):
+        self.current_proposal = None
+        self.highest_proposal = None
+        self.promised_acceptors = set()
+        self.proposal_counter = 0
 
     def propose(self, n, v, quorum):
         # cannot propose if we are currently proposing something else
         if self.current_proposal is not None:
             if PROPOSER_DEBUG:
-                print "PROPOSER_DEBUG: Attempted to create proposal for decree {} when proposal {} for decree is already in place".format(n, self.current_proposal.p, self.current_proposal.n)
-
-            return False
+                print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.current_proposal.p, self.current_proposal.n)
+            self.init_proposal()
 
         # pick a proposal number from the counter, and add one
         p = self.proposal_counter
@@ -87,9 +91,7 @@ class Proposer():
             self.messenger.send_accept_request(p, n, v, self.promised_acceptors)
 
             # reset the state kept by proposer
-            self.current_proposal = None
-            self.highest_proposal = None
-            self.promised_acceptors = set()
+            self.init_proposal()
 
 
     def handle_promise(self, had_previous, p, n, v, acceptor):
@@ -172,8 +174,6 @@ class Proposer():
             print "PROPOSER_DEBUG: Proposal {} for decree {} was refused by acceptor {}; aborting it".format(p, n, acceptor)
 
         # reset the state kept by proposer
-        self.current_proposal = None
-        self.highest_proposal = None
-        self.promised_acceptors = set()
+        self.init_proposal()
 
         return True
