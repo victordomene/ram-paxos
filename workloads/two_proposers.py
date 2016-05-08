@@ -61,7 +61,7 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
 
     return vm 
 
-def proposer_entrypoint(name, network):
+def dying_proposer_entrypoint(name, network):
     """
     Thread entrypoint for a proposer.
 
@@ -78,6 +78,34 @@ def proposer_entrypoint(name, network):
     n = 0
     v = 1000
 
+    while n < 10:
+        # propose values
+        vm.propose_to_quorum(n, v)
+
+        # update values for next round
+        n += 1
+        v -= 1
+
+        # give some time before proposing again
+        time.sleep(1)
+
+def surviving_proposer_entrypoint(name, network):
+    """
+    Thread entrypoint for a proposer.
+
+    This must simply call start_rdtp_vm with our name and network. 
+    """
+    # start an rdtp VM with our name and start serving 
+    vm = start_vm(name, network, initialize_grpc_vm)
+
+    # sleep a little bit before trying to send proposals
+    # (cheating for bootstrap)
+    time.sleep(2)
+
+    # decree number and value; these will change
+    n = 0
+    v = 5000
+
     while True:
         # propose values
         vm.propose_to_quorum(n, v)
@@ -91,7 +119,7 @@ def proposer_entrypoint(name, network):
 
 def replicas_entrypoint(name, network):
     # start an rdtp VM with our name and start serving
-    vm = start_vm(name, network, initialize_grpc_vm)
+    vm = start_vm(name, network)
 
     # simply sleep forever, the server will handle the
     # necessary requests
@@ -118,10 +146,10 @@ def main():
         network[name] = (HOST, START_PORT + i)
 
     # initialize the proposer process
-    proposer = Process(target = proposer_entrypoint, args = ("M0", network))
+    proposer = Process(target = dying_proposer_entrypoint, args = ("M0", network))
     proposer.start()
     
-    proposer = Process(target = proposer_entrypoint, args = ("M1", network))
+    proposer = Process(target = surviving_proposer_entrypoint, args = ("M1", network))
     proposer.start()
 
     # initialize all the replicas
