@@ -119,7 +119,7 @@ def surviving_proposer_entrypoint(name, network):
 
 def replicas_entrypoint(name, network):
     # start an rdtp VM with our name and start serving
-    vm = start_vm(name, network)
+    vm = start_vm(name, network, initialize_grpc_vm)
 
     # simply sleep forever, the server will handle the
     # necessary requests
