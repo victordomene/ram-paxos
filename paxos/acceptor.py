@@ -5,7 +5,7 @@ This module implements an acceptor, using the specified messenger.
 from proposal import Proposal
 import threading
 
-ACCEPTOR_DEBUG = False
+ACCEPTOR_DEBUG = True
 
 class Acceptor():
     """
@@ -59,21 +59,33 @@ class Acceptor():
             self.messenger.send_promise(False, 0, n, 0, proposer)
 
             # Also we make a promise never to accept proposal numbered less than p
-            assert(n not in self.promises)
-            self.promises[n] = p
+            self.promises[n] = (p, proposer)
 
             self.lock.release()
 
             return True
 
         # We have made a promise but want to override it
-        elif self.promises[n] < p:
+        else:
+            # if the promised proposal is smaller than the current proposal,
+            # we refuse it
+            if self.promises[n] < (p, proposer):
+                if ACCEPTOR_DEBUG:
+                    print "ACCEPTOR_DEBUG: Refused promise for proposal number {} for decree {}".format(p, n)
+
+                self.messenger.send_refuse(p, n, proposer)
+
+                self.lock.release()
+                return False
+
+            # otherwise, we want to accept it
+
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Subsequent proposal number {} for decree {}".format(p, n)
 
-            highest_accepted = self.accepted_proposals[n]
+            if n in self.accepted_proposals:
+                highest_accepted = self.accepted_proposals[n]
 
-            if highest_accepted:
                 # had_previous = True so we'll send the current highest accepted value
                 self.messenger.send_promise(True, highest_accepted.p, n, highest_accepted.v, proposer)
             else:
@@ -81,21 +93,11 @@ class Acceptor():
                 self.messenger.send_promise(False, 0, n, 0, proposer)
 
             # Also we make a promise never to accept proposal numbered less than p
-            self.promises[n] = p
+            self.promises[n] = (p, proposer)
 
             self.lock.release()
 
             return True
-        else:
-            if ACCEPTOR_DEBUG:
-                print "ACCEPTOR_DEBUG: Refused promise for proposal number {} for decree {}".format(p, n)
-
-            # Else we refuse
-            self.messenger.send_refuse(p, n, proposer)
-
-            self.lock.release()
-
-            return False 
 
     def handle_accept(self, p, n, v, proposer):
         """
@@ -114,9 +116,9 @@ class Acceptor():
         self.lock.acquire()
 
         # We promised not to accept any proposals less than promises[n]
-        if n in self.promises and self.promises[n] > p:
+        if n in self.promises and self.promises[n] < (p, proposer):
             if ACCEPTOR_DEBUG:
-                print "ACCEPTOR_DEBUG: Promised not to answer proposals less than {} for decree {}".format(n, self.promises[n])
+                print "ACCEPTOR_DEBUG: Promised not to answer proposals less than {} for decree {}".format(self.promises[n], n)
 
             self.messenger.send_refuse(p, n, proposer)
 
@@ -127,12 +129,15 @@ class Acceptor():
         # If everything is fine, we proceed to accept
         # !# seems like there is an issue with < here...
         if n in self.accepted_proposals:
-            assert(self.accepted_proposals[n].p <= p)
+            acc_p = self.accepted_proposals[n].p
+            acc_proposer = self.accepted_proposals[n].proposer
 
-        self.accepted_proposals[n] = Proposal(p, n, v)
+            assert((acc_p, acc_proposer) <= (p, proposer))
+
+        self.accepted_proposals[n] = Proposal(p, n, v, proposer)
 
         if ACCEPTOR_DEBUG:
-            print "ACCEPTOR_DEBUG: Accepted proposal {} for decree {} with value {}".format(p, n, v)
+            print "ACCEPTOR_DEBUG: Accepted proposal {} for decree {} with value {}".format((p, proposer), n, v)
 
         # Finally we just send what we accepted to all learners
         # !# Everyone is a learner !!!!2!!
@@ -140,7 +145,7 @@ class Acceptor():
 
         for learner in learners:
             if ACCEPTOR_DEBUG:
-                print "ACCEPTOR_DEBUG: Reported acceptance of proposal {} and decree {} to learner {}".format(p, n, learner)
+                print "ACCEPTOR_DEBUG: Reported acceptance of proposal {} and decree {} to learner {}".format((p, proposer), n, learner)
 
             self.messenger.send_learn(p, n, v, learner)
 

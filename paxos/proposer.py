@@ -81,7 +81,7 @@ class Proposer():
         self.proposal_counter += 1
 
         # create proposal with passed in information
-        self.current_proposal = Proposal(p, n, v)
+        self.current_proposal = Proposal(p, n, v, self.messenger.name)
 
         # send the prepare message to everybody in the quorum
         self.messenger.send_prepare(p, n, quorum)
@@ -178,7 +178,7 @@ class Proposer():
 
             # we may need to initiate the highest proposal here
             if self.highest_proposal is None:
-                self.highest_proposal = Proposal(p, n, v)
+                self.highest_proposal = Proposal(p, n, v, self.messenger.name)
 
             # update the value of the proposal according to the rules. Notice here
             # that p could be None

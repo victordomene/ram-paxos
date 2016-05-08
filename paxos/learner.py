@@ -5,7 +5,7 @@ This module implements a learner, using the specified messenger.
 from proposal import Proposal
 import threading
 
-LEARNER_DEBUG = False
+LEARNER_DEBUG = True
 
 class Learner():
     """
@@ -37,7 +37,7 @@ class Learner():
         if LEARNER_DEBUG:
             print "LEARNER_DEBUG: Writing proposal {} for decree {} with value {} to learner {}".format(p, n, v, self.messenger.name)
 
-        self.ledger[n] = Proposal(p, n, v)
+        self.ledger[n] = Proposal(p, n, v, "OI")
 
     def handle_learn(self, p, n, v, acceptor):
         """
