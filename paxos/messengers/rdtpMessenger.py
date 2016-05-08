@@ -93,7 +93,7 @@ class rdtpMessenger():
 
         return True
 
-    def send_accept_request(self, p, n, v, quorum):
+    def send_accept(self, p, n, v, quorum):
         for acceptor in quorum:
             # fetch the stub for each of the acceptors
             stub = self._fetch_stub(acceptor)
@@ -102,7 +102,7 @@ class rdtpMessenger():
                 return False
 
             # create the appropriate request
-            self.try_send(acceptor, stub, 0, "send_accept_request", str(p), str(n), str(v), self.name)
+            self.try_send(acceptor, stub, 0, "send_accept", str(p), str(n), str(v), self.name)
 
         return True
 
@@ -118,7 +118,7 @@ class rdtpMessenger():
 
         return True
 
-    def send_refuse_proposal(self, p, n, proposer):
+    def send_refuse(self, p, n, proposer):
         # fetch the stub for the proposer
         stub = self._fetch_stub(proposer)
 
@@ -126,11 +126,11 @@ class rdtpMessenger():
             return False
 
         # create the appropriate request
-        self.try_send(proposer, stub, 0, "send_refuse_proposal", str(p), str(n), self.name)
+        self.try_send(proposer, stub, 0, "send_refuse", str(p), str(n), self.name)
 
         return True
 
-    def send_accepted(self, p, n, v, learner):
+    def send_learn(self, p, n, v, learner):
         # fetch the stub for the learner
         stub = self._fetch_stub(learner)
 
@@ -138,6 +138,6 @@ class rdtpMessenger():
             return False
 
         # create the appropriate request
-        self.try_send(learner, stub, 0, "send_accepted", str(p), str(n), str(v), self.name)
+        self.try_send(learner, stub, 0, "send_learn", str(p), str(n), str(v), self.name)
 
         return True

@@ -88,7 +88,7 @@ class Proposer():
                 print "PROPOSER_DEBUG: Proposal {} with value {} sent to promised acceptors: {}".format(p, v, self.promised_acceptors)
 
             # send accept request to the promised acceptors !# ??
-            self.messenger.send_accept_request(p, n, v, self.promised_acceptors)
+            self.messenger.send_accept(p, n, v, self.promised_acceptors)
 
             # reset the state kept by proposer
             self.init_proposal()

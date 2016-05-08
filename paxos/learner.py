@@ -4,7 +4,7 @@ This module implements a learner, using the specified messenger.
 
 from proposal import Proposal
 
-LEARNER_DEBUG = False
+LEARNER_DEBUG = False 
 
 class Learner():
     """
@@ -28,7 +28,7 @@ class Learner():
 
         self.ledger[n] = Proposal(p, n, v)
 
-    def handle_accepted(self, p, n, v, acceptor):
+    def handle_learn(self, p, n, v, acceptor):
         """
         Handles the event of an acceptor voting for a proposal.
 

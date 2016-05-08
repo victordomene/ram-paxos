@@ -42,7 +42,7 @@ class grpcReceiver(Receiver):
 
         return paxos_pb2.OKResponse(response = True)
 
-    def handle_accept_request(self, request, context):
+    def handle_accept(self, request, context):
         p = request.proposal_number
         n = request.decree_number
         v = request.value
@@ -51,7 +51,7 @@ class grpcReceiver(Receiver):
         if RECEIVER_DEBUG:
             print "AcceptRequest received: p = {}, n = {}, v = {}, proposer = {}".format(p, n, v, proposer)
 
-        success = self.acceptor.handle_accept_request(p, n, v, proposer)
+        success = self.acceptor.handle_accept(p, n, v, proposer)
 
         return paxos_pb2.OKResponse(response = True)
 
@@ -76,27 +76,27 @@ class grpcReceiver(Receiver):
 
         return paxos_pb2.OKResponse(response = True)
 
-    def handle_refuse_promise(self, request, context):
+    def handle_refuse(self, request, context):
         p = request.proposal_number
         n = request.decree_number
         acceptor = request.acceptor
 
         if RECEIVER_DEBUG:
-            print "RefusePromiseRequest received: p = {}, n = {}, acceptor = {}".format(p, n, acceptor)
+            print "RefuseRequest received: p = {}, n = {}, acceptor = {}".format(p, n, acceptor)
 
-        success = self.proposer.handle_refuse_promise(p, n, acceptor)
+        success = self.proposer.handle_refuse(p, n, acceptor)
 
         return paxos_pb2.OKResponse(response = True)
 
-    def handle_accepted(self, request, context):
+    def handle_learn(self, request, context):
         p = request.proposal_number
         n = request.decree_number
         v = request.value
         acceptor = request.acceptor
 
         if RECEIVER_DEBUG:
-            print "AcceptedRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
+            print "LearnRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
-        success = self.learner.handle_accepted(p, n, v, acceptor)
+        success = self.learner.handle_learn(p, n, v, acceptor)
 
         return paxos_pb2.OKResponse(response = True)

@@ -99,29 +99,30 @@ class rdtpReceiver():
 
                         self.handle_promise(had_previous, p, n, v, acceptor)
 
-                    elif method == 'send_accept_request':
+                    elif method == 'send_accept':
                         if len(args) != 5:
                             self.usage_args(method, len(args), 5)
                             return
 
                         p, n, v, proposer = int(args[1]), int(args[2]), int(args[3]), str(args[4])
-                        self.handle_accept_request(p, n, v, proposer)
+                        self.handle_accept(p, n, v, proposer)
 
-                    elif method == 'send_refuse_proposal':
+                    elif method == 'send_refuse':
                         if len(args) != 4:
                             self.usage_args(method, len(args), 4)
                             return
 
                         p, n, acceptor = int(args[1]), int(args[2]), str(args[3])
-                        self.handle_refuse_promise(p, n, acceptor)
+                        self.handle_refuse(p, n, acceptor)
 
-                    elif method == 'send_accepted':
+                    elif method == 'send_learn':
                         if len(args) != 5:
                             self.usage_args(method, len(args), 5)
                             return
 
                         p, n, v, acceptor = int(args[1]), int(args[2]), int(args[3]), str(args[4])
-                        self.handle_accepted(p, n, v, acceptor)
+                        self.handle_learn(p, n, v, acceptor)
+
                     # This should be sent by an outside client who's not part of paxos
                     elif method == 'print_ledger':
                         print 'Will print ledger'
@@ -139,11 +140,11 @@ class rdtpReceiver():
 
         return self.acceptor.handle_prepare(p, n, proposer)
 
-    def handle_accept_request(self, p, n, v, proposer):
+    def handle_accept(self, p, n, v, proposer):
         if RECEIVER_DEBUG:
             print "RECEIVER_DEBUG: AcceptRequest received: p = {}, n = {}, v = {}, proposer = {}".format(p, n, v, proposer)
 
-        return self.acceptor.handle_accept_request(p, n, v, proposer)
+        return self.acceptor.handle_accept(p, n, v, proposer)
 
     def handle_promise(self, had_previous, p, n, v, acceptor):
 
@@ -157,17 +158,17 @@ class rdtpReceiver():
 
         return self.proposer.handle_promise(p, n, v, acceptor)
 
-    def handle_refuse_promise(self, p, n, acceptor):
+    def handle_refuse(self, p, n, acceptor):
         if RECEIVER_DEBUG:
-            print "RECEIVER_DEBUG: RefusePromiseRequest received: p = {}, n = {}, acceptor = {}".format(p, n, acceptor)
+            print "RECEIVER_DEBUG: RefuseRequest received: p = {}, n = {}, acceptor = {}".format(p, n, acceptor)
 
-        return self.proposer.handle_refuse_promise(p, n, acceptor)
+        return self.proposer.handle_refuse(p, n, acceptor)
 
-    def handle_accepted(self, p, n, v, acceptor):
+    def handle_learn(self, p, n, v, acceptor):
         if RECEIVER_DEBUG:
-            print "RECEIVER_DEBUG: AcceptedRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
+            print "RECEIVER_DEBUG: LearnRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
 
-        return self.learner.handle_accepted(p, n, v, acceptor)
+        return self.learner.handle_learn(p, n, v, acceptor)
 
     def handle_print_ledger(self):
         if RECEIVER_DEBUG:

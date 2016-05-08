@@ -4,7 +4,7 @@ This module implements an acceptor, using the specified messenger.
 
 from proposal import Proposal
 
-ACCEPTOR_DEBUG = False
+ACCEPTOR_DEBUG = False 
 
 class Acceptor():
     """
@@ -77,11 +77,11 @@ class Acceptor():
                 print "ACCEPTOR_DEBUG: Refused promise for proposal number {} for decree {}".format(p, n)
 
             # Else we refuse
-            self.messenger.send_refuse_proposal(p, n, proposer)
+            self.messenger.send_refuse(p, n, proposer)
 
             return True
 
-    def handle_accept_request(self, p, n, v, proposer):
+    def handle_accept(self, p, n, v, proposer):
         """
         Handles an accept request that has been received. This will always
         succeed, unless we promised a proposal with a higher number that we
@@ -105,7 +105,7 @@ class Acceptor():
         # If everything is fine, we proceed to accept
         # !# seems like there is an issue with < here...
         if n in self.accepted_proposals:
-            assert(self.accepted_proposals[n].p < p)
+            assert(self.accepted_proposals[n].p <= p)
 
         self.accepted_proposals[n] = Proposal(p, n, v)
 
@@ -120,6 +120,6 @@ class Acceptor():
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Reported acceptance of proposal {} and decree {} to learner {}".format(p, n, learner)
 
-            self.messenger.send_accepted(p, n, v, learner)
+            self.messenger.send_learn(p, n, v, learner)
 
         return True

@@ -7,14 +7,14 @@ package paxos;
 service VM {
 	// Acceptors will receive these
 	rpc handle_prepare (PrepareRequest) returns (OKResponse);
-	rpc handle_accept_request (AcceptRequest) returns (OKResponse);
+	rpc handle_accept (AcceptRequest) returns (OKResponse);
 
 	// Proposers will receive these
 	rpc handle_promise (PromiseRequest) returns (OKResponse);
-	rpc handle_refuse_promise (RefusePromiseRequest) returns (OKResponse);
+	rpc handle_refuse (RefuseRequest) returns (OKResponse);
 
 	// Learners will receive these
-	rpc handle_accepted (AcceptedRequest) returns (OKResponse);
+	rpc handle_learn (LearnRequest) returns (OKResponse);
 }
 
 message PrepareRequest {
@@ -50,13 +50,13 @@ message PromiseRequest {
 	string acceptor = 5;
 }
 
-message RefusePromiseRequest {
+message RefuseRequest {
 	uint64 proposal_number = 1;
 	uint64 decree_number = 2;
 	string acceptor = 3;
 }
 
-message AcceptedRequest {
+message LearnRequest {
 	uint64 proposal_number = 1;
 	uint64 decree_number = 2;
 

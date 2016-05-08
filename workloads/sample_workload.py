@@ -68,7 +68,7 @@ def proposer_entrypoint(name, network):
     This must simply call start_rdtp_vm with our name and network. 
     """
     # start an rdtp VM with our name and start serving 
-    vm = start_vm(name, network)
+    vm = start_vm(name, network, initialize_grpc_vm)
 
     # sleep a little bit before trying to send proposals
     # (cheating for bootstrap)
@@ -91,7 +91,7 @@ def proposer_entrypoint(name, network):
 
 def replicas_entrypoint(name, network):
     # start an rdtp VM with our name and start serving
-    vm = start_vm(name, network)
+    vm = start_vm(name, network, initialize_grpc_vm)
 
     # simply sleep forever, the server will handle the
     # necessary requests
