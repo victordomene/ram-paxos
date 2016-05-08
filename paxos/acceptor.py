@@ -3,8 +3,9 @@ This module implements an acceptor, using the specified messenger.
 """
 
 from proposal import Proposal
+import threading
 
-ACCEPTOR_DEBUG = False 
+ACCEPTOR_DEBUG = False
 
 class Acceptor():
     """
@@ -23,6 +24,8 @@ class Acceptor():
         self.accepted_proposals = {}
         self.promises = {}
 
+        self.lock = threading.Lock()
+
         return
 
     def handle_prepare(self, p, n, proposer):
@@ -40,6 +43,8 @@ class Acceptor():
         @return True if promise is made; False otherwise
         """
 
+        self.lock.acquire()
+
         # We have never replied to a prepare request for this decree
         if n not in self.promises:
             if ACCEPTOR_DEBUG:
@@ -51,6 +56,8 @@ class Acceptor():
             # Also we make a promise never to accept proposal numbered less than p
             assert(n not in self.promises)
             self.promises[n] = p
+
+            self.lock.release()
 
             return True
 
@@ -71,6 +78,8 @@ class Acceptor():
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = p
 
+            self.lock.release()
+
             return True
         else:
             if ACCEPTOR_DEBUG:
@@ -78,6 +87,8 @@ class Acceptor():
 
             # Else we refuse
             self.messenger.send_refuse(p, n, proposer)
+
+            self.lock.release()
 
             return True
 
@@ -95,10 +106,16 @@ class Acceptor():
         @return True if accepted; False otherwise
         """
 
+        self.lock.acquire()
+
         # We promised not to accept any proposals less than promises[n]
         if n in self.promises and self.promises[n] > p:
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Promised not to answer proposals less than {} for decree {}".format(n, self.promises[n])
+
+            self.messenger.send_refuse(p, n, proposer)
+
+            self.lock.release()
 
             return False
 
@@ -121,5 +138,7 @@ class Acceptor():
                 print "ACCEPTOR_DEBUG: Reported acceptance of proposal {} and decree {} to learner {}".format(p, n, learner)
 
             self.messenger.send_learn(p, n, v, learner)
+
+        self.lock.release()
 
         return True

@@ -3,8 +3,9 @@ This module implements a proposer, using the specified messenger.
 """
 
 from proposal import Proposal
+import threading
 
-PROPOSER_DEBUG = False
+PROPOSER_DEBUG = True
 
 class Proposer():
     """
@@ -16,25 +17,45 @@ class Proposer():
     def __init__(self, messenger):
         self.messenger = messenger
 
-        self.proposal_counter = 0
-
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 
-        self.init_proposal()
+        self.init_decree()
+
+        self.lock = threading.RLock()
+
         return
+
+    def init_decree(self):
+        self.init_proposal()
+        self.proposal_counter = 0
 
     def init_proposal(self):
         self.current_proposal = None
         self.highest_proposal = None
         self.promised_acceptors = set()
-        self.proposal_counter = 0
 
     def propose(self, n, v, quorum):
+        # everytime we propose something, we recalculate the quorum size.
+        # this is not ideal, but it will work
+        self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
+
+        self.lock.acquire()
+
         # cannot propose if we are currently proposing something else
         if self.current_proposal is not None:
-            if PROPOSER_DEBUG:
-                print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.current_proposal.p, self.current_proposal.n)
-            self.init_proposal()
+
+            # if we are starting a new proposal for the same decree...
+            # notice that we do not want to set the counter to 0 here!
+            if self.current_proposal.n == n:
+                if PROPOSER_DEBUG:
+                    print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.current_proposal.p, self.current_proposal.n)
+                self.init_proposal()
+
+            # otherwise, we are starting a new decree
+            else:
+                if PROPOSER_DEBUG:
+                    print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.current_proposal.p, self.current_proposal.n)
+                self.init_decree()
 
         # pick a proposal number from the counter, and add one
         p = self.proposal_counter
@@ -45,6 +66,8 @@ class Proposer():
 
         # send the prepare message to everybody in the quorum
         self.prepare(p, n, quorum)
+
+        self.lock.release()
 
     def prepare(self, p, n, quorum):
         """
@@ -67,10 +90,13 @@ class Proposer():
         return True
 
     def _check_promise_count(self):
+        min_quorum = len(self.messenger.get_quorum()) / 2 + 1
+
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Checking promise count: {}, when min_quorum_size is {}".format(len(self.promised_acceptors), self.min_quorum_size)
 
-        if len(self.promised_acceptors) >= self.min_quorum_size:
+        if len(self.promised_acceptors) >= min_quorum:
+
             # fetch the information that will be passed to acceptors
             p = self.current_proposal.p
             n = self.current_proposal.n
@@ -113,10 +139,14 @@ class Proposer():
         @return XXX
         """
 
+        self.lock.acquire()
+
         # we must have a current proposal set in order to handle this request
         if self.current_proposal is None:
             if PROPOSER_DEBUG:
                 print "PROPOSER_DEBUG: Promise received when no proposal is in place; ignoring it"
+
+            self.lock.release()
 
             return False
 
@@ -126,6 +156,8 @@ class Proposer():
         if n != self.current_proposal.n:
             if PROPOSER_DEBUG:
                 print "PROPOSER_DEBUG: Promise received for a different decree {} than current one {}".format(n, self.current_proposal.n)
+
+            self.lock.release()
 
             return False
 
@@ -157,9 +189,11 @@ class Proposer():
         self.promised_acceptors.add(acceptor)
         self._check_promise_count()
 
+        self.lock.release()
+
         return True
 
-    def handle_refuse_promise(self, p, n, acceptor):
+    def handle_refuse(self, p, n, acceptor):
         """
         Handles a refusal of a promise given by an acceptor. In case this
         is received, we must stop working on the current proposal, since
@@ -175,7 +209,11 @@ class Proposer():
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Proposal {} for decree {} was refused by acceptor {}; aborting it".format(p, n, acceptor)
 
+        self.lock.acquire()
+
         # reset the state kept by proposer
         self.init_proposal()
+
+        self.lock.release()
 
         return True

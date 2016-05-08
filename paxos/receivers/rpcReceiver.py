@@ -12,7 +12,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from protobufs import paxos_pb2
 
 TIMEOUT_SECONDS = 10
-RECEIVER_DEBUG = True
+RECEIVER_DEBUG = False
 
 class grpcReceiver(Receiver):
     def __init__(self, proposer, acceptor, learner):

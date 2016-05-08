@@ -3,8 +3,9 @@ This module implements a learner, using the specified messenger.
 """
 
 from proposal import Proposal
+import threading
 
-LEARNER_DEBUG = False 
+LEARNER_DEBUG = False
 
 class Learner():
     """
@@ -20,6 +21,9 @@ class Learner():
         self.accepted = {}
 
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
+
+        self.lock = threading.Lock()
+
         return
 
     def write_to_ledger(self, p, n, v):
@@ -40,6 +44,10 @@ class Learner():
         Does not return.
         """
 
+        self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
+
+        self.lock.acquire()
+
         if LEARNER_DEBUG:
             print "LEARNER_DEBUG: Received an accepted notification for proposal {} and decree {} with value {} from acceptor {}".format(p, n, v, acceptor)
 
@@ -51,6 +59,8 @@ class Learner():
         if len(self.accepted[n, p]) >= self.min_quorum_size:
             self.write_to_ledger(p, n, v)
 
+        self.lock.release()
+
         return True
 
     def get_decree(self, n):
@@ -60,13 +70,16 @@ class Learner():
         # Spinlock
         while n not in self.ledger:
         	pass
+
         return self.ledger[n]
 
     def handle_print_ledger(self):
         print "##########################"
         print 'Learner {} printing Ledger'.format(self.messenger.name)
 
+        self.lock.acquire()
+
         for decree in self.ledger:
             print "Decree: {}, Value: {}".format(decree, self.ledger[decree].v)
 
-
+        self.lock.release()
