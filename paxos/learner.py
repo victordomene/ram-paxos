@@ -15,16 +15,23 @@ class Learner():
     """
 
     def __init__(self, messenger):
+        # messenger that is used for this learner
         self.messenger = messenger
+
+        # the ledger, where accepted decrees will be written
         self.ledger = {}
 
+        # a dictionary that maps (decree, proposal) => set of machines
+        # that have accepted that proposal for that decree
         self.accepted = {}
 
+        # calculate the quorum size; notice that this may change as we
+        # add destinations to the messenger
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 
+        # lock to guarantee requests are atomic and that operations on
+        # the sets (such as self.accepted) will not be conflicting
         self.lock = threading.Lock()
-
-        return
 
     def write_to_ledger(self, p, n, v):
         if LEARNER_DEBUG:
@@ -44,6 +51,9 @@ class Learner():
         Does not return.
         """
 
+        # recalculate the quorum size on every learn request; doing this on
+        # init is not good enough, since we may add destinations to the
+        # messenger
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 
         self.lock.acquire()
@@ -51,27 +61,21 @@ class Learner():
         if LEARNER_DEBUG:
             print "LEARNER_DEBUG: Received an accepted notification for proposal {} and decree {} with value {} from acceptor {}".format(p, n, v, acceptor)
 
-        if n not in self.accepted:
+        # initialize the set of machines that accepted this decree and
+        # proposal
+        if (n, p) not in self.accepted:
             self.accepted[n, p] = set()
 
+        # add this acceptor to the set
         self.accepted[n, p].add(acceptor)
 
+        # if we have enough acceptors, write to ledger
         if len(self.accepted[n, p]) >= self.min_quorum_size:
             self.write_to_ledger(p, n, v)
 
         self.lock.release()
 
         return True
-
-    def get_decree(self, n):
-        if LEARNER_DEBUG:
-            print "LEARNER_DEBUG: Getting the information in the ledger for decree {}".format(n)
-
-        # Spinlock
-        while n not in self.ledger:
-        	pass
-
-        return self.ledger[n]
 
     def handle_print_ledger(self):
         print "##########################"

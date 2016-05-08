@@ -17,45 +17,64 @@ class Proposer():
     def __init__(self, messenger):
         self.messenger = messenger
 
+        # calculate the quorum size; notice that this may change as we
+        # add destinations to the messenger
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 
-        self.init_decree()
+        # initializes the current & highest proposals to None
+        self.current_proposal = None
+        self.highest_proposal = None
 
-        self.lock = threading.RLock()
+        # initialize the set of promised acceptors for the current proposal
+        self.promised_acceptors = set()
 
-        return
-
-    def init_decree(self):
-        self.init_proposal()
+        # initialize the proposal counter; this will be reset everytime
+        # a decree is agreed upon. !# This may not be necessary/desired.
         self.proposal_counter = 0
 
-    def init_proposal(self):
+        # lock to guarantee requests are atomic and that operations on
+        # the sets (such as self.promised_acceptors) will not be conflicting
+        self.lock = threading.Lock()
+
+    def _init_proposal(self):
+        """
+        Helper method that initializes a proposal (by clearing the useful
+        instance variables).
+
+        Does not return.
+        """
+
         self.current_proposal = None
         self.highest_proposal = None
         self.promised_acceptors = set()
 
     def propose(self, n, v, quorum):
-        # everytime we propose something, we recalculate the quorum size.
-        # this is not ideal, but it will work
+        """
+        Interface to start a Paxos proposal. Simply does a lot of
+        initialization steps and sends the prepare requests. Notice that
+        the proposal number is handled internally, and if we propose in
+        the middle of another proposal, we simply stop the previous proposal.
+
+        @param n: the decree number in question
+        @param v: the proposed value for this decree
+        @param quorum: the quorum to which the prepare will be sent
+
+        Does not return.
+        """
+
+        # recalculate the quorum size on every proposal; doing this on
+        # init is not good enough, since we may add destinations to the
+        # messenger
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 
         self.lock.acquire()
 
         # cannot propose if we are currently proposing something else
         if self.current_proposal is not None:
+            if PROPOSER_DEBUG:
+                print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.current_proposal.p, self.current_proposal.n)
 
-            # if we are starting a new proposal for the same decree...
-            # notice that we do not want to set the counter to 0 here!
-            if self.current_proposal.n == n:
-                if PROPOSER_DEBUG:
-                    print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.current_proposal.p, self.current_proposal.n)
-                self.init_proposal()
-
-            # otherwise, we are starting a new decree
-            else:
-                if PROPOSER_DEBUG:
-                    print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.current_proposal.p, self.current_proposal.n)
-                self.init_decree()
+            self._init_proposal()
 
         # pick a proposal number from the counter, and add one
         p = self.proposal_counter
@@ -65,37 +84,25 @@ class Proposer():
         self.current_proposal = Proposal(p, n, v)
 
         # send the prepare message to everybody in the quorum
-        self.prepare(p, n, quorum)
-
-        self.lock.release()
-
-    def prepare(self, p, n, quorum):
-        """
-        Wrapper on the messenger: simply sends a prepare message for the
-        current proposal to a quorum.
-
-        @param p: the proposal number in question
-        @param n: the decree number in question
-        @param quorum: the quorum to which the prepare will be sent
-
-        @return True if message is sent successfully; False otherwise
-        """
-
-        # simply sends the RPC call
         self.messenger.send_prepare(p, n, quorum)
 
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Proposal {} for decree {} initiated".format(p, n)
 
-        return True
+        self.lock.release()
 
     def _check_promise_count(self):
-        min_quorum = len(self.messenger.get_quorum()) / 2 + 1
+        """
+        Helper function that checks the current promise count, and sends
+        accept requests to a quorum if we have enough promises.
+
+        Does not return.
+        """
 
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Checking promise count: {}, when min_quorum_size is {}".format(len(self.promised_acceptors), self.min_quorum_size)
 
-        if len(self.promised_acceptors) >= min_quorum:
+        if len(self.promised_acceptors) >= self.min_quorum_size:
 
             # fetch the information that will be passed to acceptors
             p = self.current_proposal.p
@@ -117,8 +124,7 @@ class Proposer():
             self.messenger.send_accept(p, n, v, self.promised_acceptors)
 
             # reset the state kept by proposer
-            self.init_proposal()
-
+            self._init_proposal()
 
     def handle_promise(self, p, n, v, acceptor):
         """
@@ -136,7 +142,9 @@ class Proposer():
         @param v: the value corresponding to @param p. This may be None.
         @param acceptor: the acceptor that responded with a promise
 
-        @return XXX
+        @return True if promise can be handled; False if it cannot (i.e., there
+        is no proposal in place, or the current decree we are handling
+        is not the one to which the promise refers to)
         """
 
         self.lock.acquire()
@@ -195,7 +203,7 @@ class Proposer():
 
     def handle_refuse(self, p, n, acceptor):
         """
-        Handles a refusal of a promise given by an acceptor. In case this
+        Handles a refusal of a proposal by an acceptor. In case this
         is received, we must stop working on the current proposal, since
         it will not be accepted anyway.
 
@@ -203,7 +211,7 @@ class Proposer():
         @param n: the decree number corresponding to the promise
         @param acceptor: the acceptor that responded with a promise
 
-        @return XXX
+        @return True (does not fail)
         """
 
         if PROPOSER_DEBUG:
@@ -212,7 +220,7 @@ class Proposer():
         self.lock.acquire()
 
         # reset the state kept by proposer
-        self.init_proposal()
+        self._init_proposal()
 
         self.lock.release()
 

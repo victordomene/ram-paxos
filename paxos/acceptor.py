@@ -18,15 +18,20 @@ class Acceptor():
     """
 
     def __init__(self, messenger):
+        # messenger that is used for this acceptor
         self.messenger = messenger
 
-        # Both are indexed by decree number
+        # a dictionary that maps decree => latest proposal this machine
+        # has accepted
         self.accepted_proposals = {}
+
+        # a dictionary that maps decree => latest promise this machine
+        # has made
         self.promises = {}
 
+        # lock to guarantee requests are atomic and that operations on
+        # the sets (such as self.accepted_proposals) will not be conflicting
         self.lock = threading.Lock()
-
-        return
 
     def handle_prepare(self, p, n, proposer):
         """
@@ -90,7 +95,7 @@ class Acceptor():
 
             self.lock.release()
 
-            return True
+            return False 
 
     def handle_accept(self, p, n, v, proposer):
         """

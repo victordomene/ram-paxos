@@ -47,10 +47,7 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
 
     # fetch the host/port information from the network for me
     host, port = network[name]
-
-    # start serving
-    vm.serve(host, port)
-    
+ 
     # add other machines
     for friend_name, (friend_host, friend_port) in network.iteritems():
         # !# should we send it to ourselves?
@@ -58,6 +55,9 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
             continue
 
         vm.add_destination(friend_name, friend_host, friend_port)
+    
+    # start serving
+    vm.serve(host, port)
 
     return vm 
 
