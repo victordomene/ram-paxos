@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='paxos.proto',
   package='paxos',
   syntax='proto3',
-  serialized_pb=_b('\n\x0bpaxos.proto\x12\x05paxos\"R\n\x0ePrepareRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\x10\n\x08proposer\x18\x03 \x01(\t\"`\n\rAcceptRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\r\n\x05value\x18\x03 \x01(\x04\x12\x10\n\x08proposer\x18\x04 \x01(\t\"w\n\x0ePromiseRequest\x12\x14\n\x0chad_previous\x18\x01 \x01(\x08\x12\x17\n\x0fproposal_number\x18\x02 \x01(\x04\x12\x15\n\rdecree_number\x18\x03 \x01(\x04\x12\r\n\x05value\x18\x04 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x05 \x01(\t\"Q\n\rRefuseRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x03 \x01(\t\"_\n\x0cLearnRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\r\n\x05value\x18\x03 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x04 \x01(\t\"\x1e\n\nOKResponse\x12\x10\n\x08response\x18\x01 \x01(\x08\x32\xa8\x02\n\x02VM\x12:\n\x0ehandle_prepare\x12\x15.paxos.PrepareRequest\x1a\x11.paxos.OKResponse\x12\x38\n\rhandle_accept\x12\x14.paxos.AcceptRequest\x1a\x11.paxos.OKResponse\x12:\n\x0ehandle_promise\x12\x15.paxos.PromiseRequest\x1a\x11.paxos.OKResponse\x12\x38\n\rhandle_refuse\x12\x14.paxos.RefuseRequest\x1a\x11.paxos.OKResponse\x12\x36\n\x0chandle_learn\x12\x13.paxos.LearnRequest\x1a\x11.paxos.OKResponseb\x06proto3')
+  serialized_pb=_b('\n\x0bpaxos.proto\x12\x05paxos\"R\n\x0ePrepareRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\x10\n\x08proposer\x18\x03 \x01(\t\"`\n\rAcceptRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x15\n\rdecree_number\x18\x02 \x01(\x04\x12\r\n\x05value\x18\x03 \x01(\x04\x12\x10\n\x08proposer\x18\x04 \x01(\t\"\x89\x01\n\x0ePromiseRequest\x12\x14\n\x0chad_previous\x18\x01 \x01(\x08\x12\x17\n\x0fproposal_number\x18\x02 \x01(\x04\x12\x10\n\x08proposer\x18\x03 \x01(\t\x12\x15\n\rdecree_number\x18\x04 \x01(\x04\x12\r\n\x05value\x18\x05 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x06 \x01(\t\"c\n\rRefuseRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x10\n\x08proposer\x18\x02 \x01(\t\x12\x15\n\rdecree_number\x18\x03 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x04 \x01(\t\"q\n\x0cLearnRequest\x12\x17\n\x0fproposal_number\x18\x01 \x01(\x04\x12\x10\n\x08proposer\x18\x02 \x01(\t\x12\x15\n\rdecree_number\x18\x03 \x01(\x04\x12\r\n\x05value\x18\x04 \x01(\x04\x12\x10\n\x08\x61\x63\x63\x65ptor\x18\x05 \x01(\t\"\x1e\n\nOKResponse\x12\x10\n\x08response\x18\x01 \x01(\x08\x32\xa8\x02\n\x02VM\x12:\n\x0ehandle_prepare\x12\x15.paxos.PrepareRequest\x1a\x11.paxos.OKResponse\x12\x38\n\rhandle_accept\x12\x14.paxos.AcceptRequest\x1a\x11.paxos.OKResponse\x12:\n\x0ehandle_promise\x12\x15.paxos.PromiseRequest\x1a\x11.paxos.OKResponse\x12\x38\n\rhandle_refuse\x12\x14.paxos.RefuseRequest\x1a\x11.paxos.OKResponse\x12\x36\n\x0chandle_learn\x12\x13.paxos.LearnRequest\x1a\x11.paxos.OKResponseb\x06proto3')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -145,22 +145,29 @@ _PROMISEREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='decree_number', full_name='paxos.PromiseRequest.decree_number', index=2,
-      number=3, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
+      name='proposer', full_name='paxos.PromiseRequest.proposer', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='value', full_name='paxos.PromiseRequest.value', index=3,
+      name='decree_number', full_name='paxos.PromiseRequest.decree_number', index=3,
       number=4, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='acceptor', full_name='paxos.PromiseRequest.acceptor', index=4,
-      number=5, type=9, cpp_type=9, label=1,
+      name='value', full_name='paxos.PromiseRequest.value', index=4,
+      number=5, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='acceptor', full_name='paxos.PromiseRequest.acceptor', index=5,
+      number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -177,8 +184,8 @@ _PROMISEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=204,
-  serialized_end=323,
+  serialized_start=205,
+  serialized_end=342,
 )
 
 
@@ -197,15 +204,22 @@ _REFUSEREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='decree_number', full_name='paxos.RefuseRequest.decree_number', index=1,
-      number=2, type=4, cpp_type=4, label=1,
+      name='proposer', full_name='paxos.RefuseRequest.proposer', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='decree_number', full_name='paxos.RefuseRequest.decree_number', index=2,
+      number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='acceptor', full_name='paxos.RefuseRequest.acceptor', index=2,
-      number=3, type=9, cpp_type=9, label=1,
+      name='acceptor', full_name='paxos.RefuseRequest.acceptor', index=3,
+      number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -222,8 +236,8 @@ _REFUSEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=325,
-  serialized_end=406,
+  serialized_start=344,
+  serialized_end=443,
 )
 
 
@@ -242,22 +256,29 @@ _LEARNREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='decree_number', full_name='paxos.LearnRequest.decree_number', index=1,
-      number=2, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
+      name='proposer', full_name='paxos.LearnRequest.proposer', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='value', full_name='paxos.LearnRequest.value', index=2,
+      name='decree_number', full_name='paxos.LearnRequest.decree_number', index=2,
       number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='acceptor', full_name='paxos.LearnRequest.acceptor', index=3,
-      number=4, type=9, cpp_type=9, label=1,
+      name='value', full_name='paxos.LearnRequest.value', index=3,
+      number=4, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='acceptor', full_name='paxos.LearnRequest.acceptor', index=4,
+      number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -274,8 +295,8 @@ _LEARNREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=408,
-  serialized_end=503,
+  serialized_start=445,
+  serialized_end=558,
 )
 
 
@@ -305,8 +326,8 @@ _OKRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=505,
-  serialized_end=535,
+  serialized_start=560,
+  serialized_end=590,
 )
 
 DESCRIPTOR.message_types_by_name['PrepareRequest'] = _PREPAREREQUEST

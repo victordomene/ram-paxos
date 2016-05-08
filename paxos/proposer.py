@@ -81,7 +81,7 @@ class Proposer():
         self.proposal_counter += 1
 
         # create proposal with passed in information
-        self.current_proposal = Proposal(p, n, v, self.messenger.name)
+        self.current_proposal = Proposal(p, self.messenger.name, n, v)
 
         # send the prepare message to everybody in the quorum
         self.messenger.send_prepare(p, n, quorum)
@@ -126,7 +126,7 @@ class Proposer():
             # reset the state kept by proposer
             self._init_proposal()
 
-    def handle_promise(self, p, n, v, acceptor):
+    def handle_promise(self, p, proposer, n, v, acceptor):
         """
         Handles a promise given by an acceptor. This must check the @param v
         (see below) and update our current proposal accordingly: the proposer
@@ -172,22 +172,27 @@ class Proposer():
         # if we had a previous proposal, update our highest_proposal accordingly
         if p is not None:
             assert(v is not None)
+            assert(proposer is not None)
 
             if PROPOSER_DEBUG:
                 print "PROPOSER_DEBUG: Promise received for decree {} up to proposal {} with value {}, from acceptor {}".format(n, p, v, acceptor)
 
             # we may need to initiate the highest proposal here
             if self.highest_proposal is None:
-                self.highest_proposal = Proposal(p, n, v, self.messenger.name)
+                self.highest_proposal = Proposal(p, proposer, n, v)
 
             # update the value of the proposal according to the rules. Notice here
             # that p could be None
-            if p > self.highest_proposal.p:
+            high_p = self.highest_proposal.p
+            high_proposer = self.highest_proposal.proposer
+
+            if (p, proposer) > (high_p, high_proposer):
                 if PROPOSER_DEBUG:
                     print "PROPOSER_DEBUG: Updating highest_proposal to {} with value {}".format(p, v)
 
                 self.highest_proposal.v = v
                 self.highest_proposal.p = p
+                self.highest_proposal.proposer = proposer
                 self.highest_proposal.n = n
 
         if PROPOSER_DEBUG:
@@ -201,26 +206,33 @@ class Proposer():
 
         return True
 
-    def handle_refuse(self, p, n, acceptor):
+    def handle_refuse(self, p, proposer, n, acceptor):
         """
         Handles a refusal of a proposal by an acceptor. In case this
         is received, we must stop working on the current proposal, since
         it will not be accepted anyway.
 
-        @param p: the proposal number corresponding to the promise
-        @param n: the decree number corresponding to the promise
-        @param acceptor: the acceptor that responded with a promise
+        @param p: the proposal number corresponding to the refusal
+        @param proposer: the proposer who initiated this proposal
+        @param n: the decree number corresponding to the refusal
+        @param acceptor: the acceptor that responded with a refusal
 
-        @return True (does not fail)
+        @return True if we could abort proposal; False otherwise 
         """
 
-        if PROPOSER_DEBUG:
-            print "PROPOSER_DEBUG: Proposal {} for decree {} was refused by acceptor {}; aborting it".format(p, n, acceptor)
+        if self.current_proposal is None or self.current_proposal.p != p or self.current_proposal.proposer != proposer:
+            if PROPOSER_DEBUG:
+                print "PROPOSER_DEBUG: Proposal {} for proposer {} was refused by acceptor {}, but this is not our current proposal; ignoring it".format(p, proposer, acceptor)
+
+            return False
 
         self.lock.acquire()
 
         # reset the state kept by proposer
         self._init_proposal()
+
+        if PROPOSER_DEBUG:
+            print "PROPOSER_DEBUG: Proposal {} for proposer {} refused by acceptor {}; aborting".format(p, proposer, acceptor)
 
         self.lock.release()
 

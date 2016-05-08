@@ -37,6 +37,10 @@ class rdtpReceiver():
 
         thread.start_new_thread(self.serve_forever, ())
 
+    def usage_args(self, method, num, expected):
+        if RECEIVER_DEBUG:
+            print "RECEIVER_DEBUG: Received {} method with {} arguments; expected {}".format(method, num, expected)
+
     def serve_forever(self):
         self.socket.listen(MAX_PENDING_CLIENTS)
 
@@ -91,13 +95,13 @@ class rdtpReceiver():
                         self.handle_prepare(p, n, proposer)
 
                     elif method == 'send_promise':
-                        if len(args) != 6:
-                            self.usage_args(method, len(args), 6)
+                        if len(args) != 7:
+                            self.usage_args(method, len(args), 7)
                             return
 
-                        had_previous, p, n, v, acceptor = 'True' == args[1], int(args[2]), int(args[3]), int(args[4]), str(args[5])
+                        had_previous, p, proposer, n, v, acceptor = 'True' == args[1], int(args[2]), str(args[3]), int(args[4]), int(args[5]), str(args[6])
 
-                        self.handle_promise(had_previous, p, n, v, acceptor)
+                        self.handle_promise(had_previous, p, proposer, n, v, acceptor)
 
                     elif method == 'send_accept':
                         if len(args) != 5:
@@ -108,20 +112,20 @@ class rdtpReceiver():
                         self.handle_accept(p, n, v, proposer)
 
                     elif method == 'send_refuse':
-                        if len(args) != 4:
-                            self.usage_args(method, len(args), 4)
-                            return
-
-                        p, n, acceptor = int(args[1]), int(args[2]), str(args[3])
-                        self.handle_refuse(p, n, acceptor)
-
-                    elif method == 'send_learn':
                         if len(args) != 5:
                             self.usage_args(method, len(args), 5)
                             return
 
-                        p, n, v, acceptor = int(args[1]), int(args[2]), int(args[3]), str(args[4])
-                        self.handle_learn(p, n, v, acceptor)
+                        p, n, acceptor = int(args[1]), str(args[2]), int(args[3]), str(args[4])
+                        self.handle_refuse(p, proposer, n, acceptor)
+
+                    elif method == 'send_learn':
+                        if len(args) != 6:
+                            self.usage_args(method, len(args), 6)
+                            return
+
+                        p, proposer, n, v, acceptor = int(args[1]), str(args[2]), int(args[3]), int(args[4]), str(args[5])
+                        self.handle_learn(p, proposer, n, v, acceptor)
 
                     # This should be sent by an outside client who's not part of paxos
                     elif method == 'print_ledger':
@@ -146,29 +150,30 @@ class rdtpReceiver():
 
         return self.acceptor.handle_accept(p, n, v, proposer)
 
-    def handle_promise(self, had_previous, p, n, v, acceptor):
+    def handle_promise(self, had_previous, p, proposer, n, v, acceptor):
 
         # handle the case where we had no previous value set
         if not had_previous:
             p = None
             v = None
+            proposer = None
 
         if RECEIVER_DEBUG:
-            print "RECEIVER_DEBUG: PromiseRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
+            print "RECEIVER_DEBUG: PromiseRequest received: p = {}, proposer = {}, n = {}, v = {}, acceptor = {}".format(p, proposer, n, v, acceptor)
 
-        return self.proposer.handle_promise(p, n, v, acceptor)
+        return self.proposer.handle_promise(p, proposer, n, v, acceptor)
 
-    def handle_refuse(self, p, n, acceptor):
+    def handle_refuse(self, p, proposer, n, acceptor):
         if RECEIVER_DEBUG:
-            print "RECEIVER_DEBUG: RefuseRequest received: p = {}, n = {}, acceptor = {}".format(p, n, acceptor)
+            print "RECEIVER_DEBUG: RefuseRequest received: p = {}, proposer = {}, n = {}, acceptor = {}".format(p, proposer, n, acceptor)
 
-        return self.proposer.handle_refuse(p, n, acceptor)
+        return self.proposer.handle_refuse(p, proposer, n, acceptor)
 
-    def handle_learn(self, p, n, v, acceptor):
+    def handle_learn(self, p, proposer, n, v, acceptor):
         if RECEIVER_DEBUG:
-            print "RECEIVER_DEBUG: LearnRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
+            print "RECEIVER_DEBUG: LearnRequest received: p = {}, proposer = {}, n = {}, v = {}, acceptor = {}".format(p, proposer, n, v, acceptor)
 
-        return self.learner.handle_learn(p, n, v, acceptor)
+        return self.learner.handle_learn(p, proposer, n, v, acceptor)
 
     def handle_print_ledger(self):
         if RECEIVER_DEBUG:

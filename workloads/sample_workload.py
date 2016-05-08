@@ -120,11 +120,14 @@ def main():
     # initialize the proposer process
     proposer = Process(target = proposer_entrypoint, args = ("M0", network))
     proposer.start()
+    
+    proposer = Process(target = proposer_entrypoint, args = ("M1", network))
+    proposer.start()
 
     # initialize all the replicas
     for name in network.keys():
         # M0 is our proposer; we ignore it
-        if name == "M0":
+        if name == "M0" or name == "M1":
             continue
 
         replicas = Process(target = replicas_entrypoint, args = (name, network))

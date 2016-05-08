@@ -120,16 +120,16 @@ class grpcMessenger(Messenger):
 
         return True
 
-    def send_promise(self, had_previous, p, n, v, proposer):
+    def send_promise(self, had_previous, p, proposer, n, v, dest):
         # fetch the stub for the proposer
-        stub = self._fetch_stub(proposer)
+        stub = self._fetch_stub(dest)
 
         if stub is None:
             return False
 
         # create the appropriate request
         request = paxos_pb2.PromiseRequest(had_previous = had_previous, proposal_number = p,
-                decree_number = n, value = v, acceptor = self.name)
+                proposer = proposer, decree_number = n, value = v, acceptor = self.name)
 
         # finally send promise back to proposer
         response = stub.handle_promise.future(request, TIMEOUT_SECONDS)
@@ -138,16 +138,16 @@ class grpcMessenger(Messenger):
 
         return True
 
-    def send_refuse(self, p, n, proposer):
+    def send_refuse(self, p, proposer, n, dest):
         # fetch the stub for the proposer
-        stub = self._fetch_stub(proposer)
+        stub = self._fetch_stub(dest)
 
         if stub is None:
             return False
 
         # create the appropriate request
         request = paxos_pb2.RefuseRequest(proposal_number = p,
-                decree_number = n, acceptor = self.name)
+                proposer = proposer, decree_number = n, acceptor = self.name)
 
         # finally send refusal back to proposer
         response = stub.handle_refuse.future(request, TIMEOUT_SECONDS)
@@ -156,7 +156,7 @@ class grpcMessenger(Messenger):
 
         return True
 
-    def send_learn(self, p, n, v, learner):
+    def send_learn(self, p, proposer, n, v, learner):
         # fetch the stub for the learner
         stub = self._fetch_stub(learner)
 
@@ -164,7 +164,7 @@ class grpcMessenger(Messenger):
             return False
 
         # create the appropriate request
-        request = paxos_pb2.LearnRequest(proposal_number = p,
+        request = paxos_pb2.LearnRequest(proposal_number = p, proposer = proposer,
                 decree_number = n, value = v, acceptor = self.name)
 
         # finally send message to learner

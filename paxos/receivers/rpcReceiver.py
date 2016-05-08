@@ -61,42 +61,46 @@ class grpcReceiver(Receiver):
         # handle the case where we had no previous value set
         if had_previous:
             p = request.proposal_number
+            proposer = request.proposer
             v = request.value
         else:
             p = None
+            proposer = None
             v = None
 
         n = request.decree_number
         acceptor = request.acceptor
 
         if RECEIVER_DEBUG:
-            print "PromiseRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
+            print "PromiseRequest received: p = {}, proposer = {}, n = {}, v = {}, acceptor = {}".format(p, proposer, n, v, acceptor)
 
-        success = self.proposer.handle_promise(p, n, v, acceptor)
+        success = self.proposer.handle_promise(p, proposer, n, v, acceptor)
 
         return paxos_pb2.OKResponse(response = True)
 
     def handle_refuse(self, request, context):
         p = request.proposal_number
+        proposer = request.proposer
         n = request.decree_number
         acceptor = request.acceptor
 
         if RECEIVER_DEBUG:
-            print "RefuseRequest received: p = {}, n = {}, acceptor = {}".format(p, n, acceptor)
+            print "RefuseRequest received: p = {}, proposer = {}, n = {}, acceptor = {}".format(p, proposer, n, acceptor)
 
-        success = self.proposer.handle_refuse(p, n, acceptor)
+        success = self.proposer.handle_refuse(p, proposer, n, acceptor)
 
         return paxos_pb2.OKResponse(response = True)
 
     def handle_learn(self, request, context):
         p = request.proposal_number
+        proposer = request.proposer
         n = request.decree_number
         v = request.value
         acceptor = request.acceptor
 
         if RECEIVER_DEBUG:
-            print "LearnRequest received: p = {}, n = {}, v = {}, acceptor = {}".format(p, n, v, acceptor)
+            print "LearnRequest received: p = {}, proposer = {}, n = {}, v = {}, acceptor = {}".format(p, proposer, n, v, acceptor)
 
-        success = self.learner.handle_learn(p, n, v, acceptor)
+        success = self.learner.handle_learn(p, proposer, n, v, acceptor)
 
         return paxos_pb2.OKResponse(response = True)

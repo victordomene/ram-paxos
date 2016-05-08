@@ -56,7 +56,7 @@ class Acceptor():
                 print "ACCEPTOR_DEBUG: First proposal {} for decree {}".format(p, n)
 
             # had_previous = False so p and v will be ignored
-            self.messenger.send_promise(False, 0, n, 0, proposer)
+            self.messenger.send_promise(False, 0, "", n, 0, proposer)
 
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = (p, proposer)
@@ -71,9 +71,9 @@ class Acceptor():
             # we refuse it
             if self.promises[n] < (p, proposer):
                 if ACCEPTOR_DEBUG:
-                    print "ACCEPTOR_DEBUG: Refused promise for proposal number {} for decree {}".format(p, n)
+                    print "ACCEPTOR_DEBUG: Refused promise for proposal number {} from proposer {} for decree {}".format(p, proposer, n)
 
-                self.messenger.send_refuse(p, n, proposer)
+                self.messenger.send_refuse(p, proposer, n, proposer)
 
                 self.lock.release()
                 return False
@@ -81,16 +81,16 @@ class Acceptor():
             # otherwise, we want to accept it
 
             if ACCEPTOR_DEBUG:
-                print "ACCEPTOR_DEBUG: Subsequent proposal number {} for decree {}".format(p, n)
+                print "ACCEPTOR_DEBUG: Subsequent proposal number {} from proposer {} for decree {}".format(p, proposer, n)
 
             if n in self.accepted_proposals:
                 highest_accepted = self.accepted_proposals[n]
 
                 # had_previous = True so we'll send the current highest accepted value
-                self.messenger.send_promise(True, highest_accepted.p, n, highest_accepted.v, proposer)
+                self.messenger.send_promise(True, highest_accepted.p, highest_accepted.proposer, n, highest_accepted.v, proposer)
             else:
                 # We never accepted anything so we'll just send the empty promise
-                self.messenger.send_promise(False, 0, n, 0, proposer)
+                self.messenger.send_promise(False, 0, "", n, 0, proposer)
 
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = (p, proposer)
@@ -120,7 +120,7 @@ class Acceptor():
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Promised not to answer proposals less than {} for decree {}".format(self.promises[n], n)
 
-            self.messenger.send_refuse(p, n, proposer)
+            self.messenger.send_refuse(p, proposer, n, proposer)
 
             self.lock.release()
 
@@ -134,7 +134,7 @@ class Acceptor():
 
             assert((acc_p, acc_proposer) <= (p, proposer))
 
-        self.accepted_proposals[n] = Proposal(p, n, v, proposer)
+        self.accepted_proposals[n] = Proposal(p, proposer, n, v)
 
         if ACCEPTOR_DEBUG:
             print "ACCEPTOR_DEBUG: Accepted proposal {} for decree {} with value {}".format((p, proposer), n, v)
@@ -147,7 +147,7 @@ class Acceptor():
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Reported acceptance of proposal {} and decree {} to learner {}".format((p, proposer), n, learner)
 
-            self.messenger.send_learn(p, n, v, learner)
+            self.messenger.send_learn(p, proposer, n, v, learner)
 
         self.lock.release()
 

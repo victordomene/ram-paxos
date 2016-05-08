@@ -106,38 +106,38 @@ class rdtpMessenger():
 
         return True
 
-    def send_promise(self, had_previous, p, n, v, proposer):
+    def send_promise(self, had_previous, p, proposer, n, v, dest):
         # fetch the stub for the proposer
-        stub = self._fetch_stub(proposer)
+        stub = self._fetch_stub(dest)
 
         if stub is None:
             return False
 
         # create the appropriate request
-        self.try_send(proposer, stub, 0, "send_promise", str(had_previous), str(p), str(n), str(v), self.name)
+        self.try_send(dest, stub, 0, "send_promise", str(had_previous), str(p), proposer, str(n), str(v), self.name)
 
         return True
 
-    def send_refuse(self, p, n, proposer):
+    def send_refuse(self, p, proposer, n, dest):
         # fetch the stub for the proposer
-        stub = self._fetch_stub(proposer)
+        stub = self._fetch_stub(dest)
 
         if stub is None:
             return False
 
         # create the appropriate request
-        self.try_send(proposer, stub, 0, "send_refuse", str(p), str(n), self.name)
+        self.try_send(dest, stub, 0, "send_refuse", str(p), proposer, str(n), self.name)
 
         return True
 
-    def send_learn(self, p, n, v, learner):
+    def send_learn(self, p, proposer, n, v, dest):
         # fetch the stub for the learner
-        stub = self._fetch_stub(learner)
+        stub = self._fetch_stub(dest)
 
         if stub is None:
             return False
 
         # create the appropriate request
-        self.try_send(learner, stub, 0, "send_learn", str(p), str(n), str(v), self.name)
+        self.try_send(dest, stub, 0, "send_learn", str(p), proposer, str(n), str(v), self.name)
 
         return True

@@ -9,7 +9,7 @@ class Proposal():
     keep the decree number.
     """
 
-    def __init__(self, p, n, v, proposer):
+    def __init__(self, p, proposer, n, v):
         self.p = p
         self.proposer = proposer
         self.n = n

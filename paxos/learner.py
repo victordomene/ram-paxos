@@ -33,13 +33,13 @@ class Learner():
         # the sets (such as self.accepted) will not be conflicting
         self.lock = threading.Lock()
 
-    def write_to_ledger(self, p, n, v):
+    def write_to_ledger(self, p, proposer, n, v):
         if LEARNER_DEBUG:
-            print "LEARNER_DEBUG: Writing proposal {} for decree {} with value {} to learner {}".format(p, n, v, self.messenger.name)
+            print "LEARNER_DEBUG: Writing proposal {} from proposer {} for decree {} with value {} to learner {}".format(p, proposer, n, v, self.messenger.name)
 
-        self.ledger[n] = Proposal(p, n, v, "OI")
+        self.ledger[n] = Proposal(p, proposer, n, v)
 
-    def handle_learn(self, p, n, v, acceptor):
+    def handle_learn(self, p, proposer, n, v, acceptor):
         """
         Handles the event of an acceptor voting for a proposal.
 
@@ -59,7 +59,7 @@ class Learner():
         self.lock.acquire()
 
         if LEARNER_DEBUG:
-            print "LEARNER_DEBUG: Received an accepted notification for proposal {} and decree {} with value {} from acceptor {}".format(p, n, v, acceptor)
+            print "LEARNER_DEBUG: Received an accepted notification for proposal {} from proposer {} and decree {} with value {} from acceptor {}".format(p, proposer, n, v, acceptor)
 
         # initialize the set of machines that accepted this decree and
         # proposal
@@ -71,7 +71,7 @@ class Learner():
 
         # if we have enough acceptors, write to ledger
         if len(self.accepted[n, p]) >= self.min_quorum_size:
-            self.write_to_ledger(p, n, v)
+            self.write_to_ledger(p, proposer, n, v)
 
         self.lock.release()
 
@@ -84,6 +84,6 @@ class Learner():
         self.lock.acquire()
 
         for decree in self.ledger:
-            print "Decree: {}, Value: {}".format(decree, self.ledger[decree].v)
+            print "Decree: {}, Value: {}, Proposal {} from {}".format(decree, self.ledger[decree].v, self.ledger[decree].p, self.ledger[decree].proposer)
 
         self.lock.release()

@@ -1,5 +1,7 @@
 """
-This workload tests Paxos with two proposers.
+This workload presents a simple interface that can be reused in other workloads.
+It summary, it runs several subprocesses using the multiprocessing package,
+makes the connections between them, and then starts working.
 """
 
 import sys
@@ -116,11 +118,11 @@ def main():
         network[name] = (HOST, START_PORT + i)
 
     # initialize the proposer process
-    first_proposer = Process(target = proposer_entrypoint, args = ("M0", network))
-    first_proposer.start()
-
-    second_proposer = Process(target = proposer_entrypoint, args = ("M1", network))
-    second_proposer.start()
+    proposer = Process(target = proposer_entrypoint, args = ("M0", network))
+    proposer.start()
+    
+    proposer = Process(target = proposer_entrypoint, args = ("M1", network))
+    proposer.start()
 
     # initialize all the replicas
     for name in network.keys():
