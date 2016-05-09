@@ -5,7 +5,7 @@ This module implements an acceptor, using the specified messenger.
 from proposal import Proposal
 import threading
 
-ACCEPTOR_DEBUG = True
+ACCEPTOR_DEBUG = False
 
 class Acceptor():
     """

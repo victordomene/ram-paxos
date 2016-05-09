@@ -5,7 +5,7 @@ This module implements a proposer, using the specified messenger.
 from proposal import Proposal
 import threading
 
-PROPOSER_DEBUG = True
+PROPOSER_DEBUG = False
 BENCHMARK = True
 
 class Proposer():

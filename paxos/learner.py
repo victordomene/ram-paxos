@@ -7,7 +7,7 @@ import threading
 import time
 import pickle
 
-LEARNER_DEBUG = True
+LEARNER_DEBUG = False
 BENCHMARK = True
 
 class Learner():
@@ -17,12 +17,16 @@ class Learner():
     @param messenger: the messenger instance that will be used
     """
 
-    def __init__(self, messenger):
+    def __init__(self, messenger, use_disk):
         # messenger that is used for this learner
         self.messenger = messenger
+        self.use_disk = use_disk
 
         # the ledger, where accepted decrees will be written
         self.ledger = {}
+
+        if self.use_disk:
+        	self.outfile = open('ledger.csv', 'w')
 
         # a dictionary that maps (decree, proposal) => set of machines
         # that have accepted that proposal for that decree
@@ -43,6 +47,9 @@ class Learner():
     def write_to_ledger(self, p, proposer, n, v):
         if LEARNER_DEBUG:
             print "LEARNER_DEBUG: Writing proposal {} from proposer {} for decree {} with value {} to learner {}".format(p, proposer, n, v, self.messenger.name)
+
+        if self.use_disk:
+        	self.outfile.write('%d,%s,%d,%d\n'.format(p, proposer, n, v))
 
         self.ledger[n] = Proposal(p, proposer, n, v)
 

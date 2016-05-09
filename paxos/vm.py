@@ -8,12 +8,12 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from paxos import proposer, acceptor, learner
 
 class VM():
-    def __init__(self, name, messengerClass, receiverClass):
+    def __init__(self, name, messengerClass, receiverClass, use_disk=True):
         self.messenger = messengerClass(name)
 
         self.proposer = proposer.Proposer(self.messenger)
         self.acceptor = acceptor.Acceptor(self.messenger)
-        self.learner = learner.Learner(self.messenger)
+        self.learner = learner.Learner(self.messenger, use_disk)
 
         self.receiver = receiverClass(self.proposer, self.acceptor, self.learner)
 
@@ -39,7 +39,7 @@ class VM():
         # get a quorum from the messenger (it is the messenger that keeps
         # track of our destinations)
         quorum = self.messenger.get_quorum()
-        
+
         # actually propose
         return self.proposer.propose(n, v, quorum)
 

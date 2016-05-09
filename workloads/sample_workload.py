@@ -24,10 +24,10 @@ HOST = "localhost"
 START_PORT = 6666
 
 def initialize_rdtp_vm(name):
-    return VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver)
+    return VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver, use_disk=True)
 
 def initialize_grpc_vm(name):
-    return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver)
+    return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver, use_disk=True)
 
 def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
     """
