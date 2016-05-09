@@ -140,7 +140,10 @@ class Messenger():
 
         @return the timestamp given in seconds
         """
-        return self.sent[n, p]
+        if (n, p) in self.sent:
+            return self.sent[n, p]
+        else:
+        	return None
 
     def stamp_proposal(self, n, p):
         """

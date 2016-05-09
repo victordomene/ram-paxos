@@ -89,8 +89,8 @@ class Learner():
             # was sent and when it was learned
             if BENCHMARK:
                 old_time = self.messenger.fetch_proposal(n, p)
-                assert(old_time != None)
-                self.differences[n, p] = time.time() - old_time
+                if old_time != None:
+                    self.differences[n, p] = time.time() - old_time
 
             self.write_to_ledger(p, proposer, n, v)
 
