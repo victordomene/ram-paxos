@@ -132,6 +132,14 @@ class rdtpReceiver():
                         print 'Will print ledger'
                         self.handle_print_ledger()
 
+                    elif method == 'print_differences':
+                        print 'Will print differences'
+                        self.handle_print_differences()
+
+                    elif method == 'diff_file':
+                        print 'Will print differences to file'
+                        self.handle_diff_file()
+
                     # if none of the methods matched, we have an unknown request...
                     else:
                         if RECEIVER_DEBUG:
@@ -180,3 +188,15 @@ class rdtpReceiver():
             print "RECEIVER_DEBUG: Printing ledger"
 
         return self.learner.handle_print_ledger()
+
+    def handle_print_differences(self):
+        if RECEIVER_DEBUG:
+            print "RECEIVER_DEBUG: Printing differences"
+
+        return self.learner.handle_print_differences()
+
+    def handle_diff_file(self):
+        if RECEIVER_DEBUG:
+            print "RECEIEVER_DEBUG: Writing Differences to file"
+
+        return self.learner.handle_diff_file()

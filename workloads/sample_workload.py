@@ -47,7 +47,7 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
 
     # fetch the host/port information from the network for me
     host, port = network[name]
- 
+
     # add other machines
     for friend_name, (friend_host, friend_port) in network.iteritems():
         # !# should we send it to ourselves?
@@ -55,20 +55,20 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
             continue
 
         vm.add_destination(friend_name, friend_host, friend_port)
-    
+
     # start serving
     vm.serve(host, port)
 
-    return vm 
+    return vm
 
 def proposer_entrypoint(name, network):
     """
     Thread entrypoint for a proposer.
 
-    This must simply call start_rdtp_vm with our name and network. 
+    This must simply call start_rdtp_vm with our name and network.
     """
-    # start an rdtp VM with our name and start serving 
-    vm = start_vm(name, network, initialize_grpc_vm)
+    # start an rdtp VM with our name and start serving
+    vm = start_vm(name, network)
 
     # sleep a little bit before trying to send proposals
     # (cheating for bootstrap)
@@ -91,7 +91,7 @@ def proposer_entrypoint(name, network):
 
 def replicas_entrypoint(name, network):
     # start an rdtp VM with our name and start serving
-    vm = start_vm(name, network, initialize_grpc_vm)
+    vm = start_vm(name, network)
 
     # simply sleep forever, the server will handle the
     # necessary requests
@@ -118,8 +118,8 @@ def main():
         network[name] = (HOST, START_PORT + i)
 
     # initialize the proposer process
-    proposer = Process(target = proposer_entrypoint, args = ("M0", network))
-    proposer.start()
+    proposer_ = Process(target = proposer_entrypoint, args = ("M0", network))
+    proposer_.start()
 
     # initialize all the replicas
     for name in network.keys():

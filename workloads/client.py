@@ -3,7 +3,7 @@ This file implements a set of tests for a server that uses the gRPC protocol
 defined by paxos.proto.
 """
 
-import time
+# import time
 import socket
 
 # attach the appropriate directories to sys.path
@@ -22,10 +22,15 @@ def init_socket(host, port):
 def run():
 
     while True:
-        host, port = raw_input().split(":")
+        host, port, comm = raw_input().split(":")
         sock = init_socket(host, int(port))
 
-    	rdtp.send(sock, 0, "print_ledger")
+        if comm == 'ledger':
+            rdtp.send(sock, 0, "print_ledger")
+        elif comm == 'diff':
+            rdtp.send(sock, 0, "print_differences")
+        elif comm == 'diff_file':
+            rdtp.send(sock, 0, "diff_file")
 
 
 

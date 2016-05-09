@@ -6,6 +6,7 @@ from proposal import Proposal
 import threading
 
 PROPOSER_DEBUG = True
+BENCHMARK = True
 
 class Proposer():
     """
@@ -82,6 +83,11 @@ class Proposer():
 
         # create proposal with passed in information
         self.current_proposal = Proposal(p, self.messenger.name, n, v)
+
+        # stamp the proposal with the proper timestamp
+        if BENCHMARK:
+            pass
+            # self.messenger.stamp_proposal(n, p)
 
         # send the prepare message to everybody in the quorum
         self.messenger.send_prepare(p, n, quorum)
@@ -217,7 +223,7 @@ class Proposer():
         @param n: the decree number corresponding to the refusal
         @param acceptor: the acceptor that responded with a refusal
 
-        @return True if we could abort proposal; False otherwise 
+        @return True if we could abort proposal; False otherwise
         """
 
         if self.current_proposal is None or self.current_proposal.p != p or self.current_proposal.proposer != proposer:

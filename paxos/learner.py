@@ -4,8 +4,11 @@ This module implements a learner, using the specified messenger.
 
 from proposal import Proposal
 import threading
+import time
+import pickle
 
 LEARNER_DEBUG = True
+BENCHMARK = True
 
 class Learner():
     """
@@ -32,6 +35,10 @@ class Learner():
         # lock to guarantee requests are atomic and that operations on
         # the sets (such as self.accepted) will not be conflicting
         self.lock = threading.Lock()
+
+        # keep track of the differences between sending and learning
+        # proposals. indexed by decree number and by p
+        self.differences = {}
 
     def write_to_ledger(self, p, proposer, n, v):
         if LEARNER_DEBUG:
@@ -71,6 +78,13 @@ class Learner():
 
         # if we have enough acceptors, write to ledger
         if len(self.accepted[n, p]) >= self.min_quorum_size:
+            # want to calculate the difference between when the proposal
+            # was sent and when it was learned
+            if BENCHMARK:
+                old_time = self.messenger.fetch_proposal(n, p)
+                assert(old_time != None)
+                self.differences[n, p] = time.time() - old_time
+
             self.write_to_ledger(p, proposer, n, v)
 
         self.lock.release()
@@ -87,3 +101,49 @@ class Learner():
             print "Decree: {}, Value: {}, Proposal {} from {}".format(decree, self.ledger[decree].v, self.ledger[decree].p, self.ledger[decree].proposer)
 
         self.lock.release()
+
+    def handle_print_differences(self):
+        print "##########################"
+        print "Learner {} printing time differences".format(self.messenger.name)
+
+        self.lock.acquire()
+
+        for diff in self.differences:
+            print "Difference: {}, Proposal {}, Decree number {}".format(self.differences[diff], diff[1], diff[0])
+
+        self.lock.release()
+
+    # as opposed to printing the differences, return a list of the differences
+    def return_differences(self):
+        self.lock.acquire()
+
+        differences = self.differences.values()
+
+        self.lock.release()
+
+        return differences
+
+
+    def mean_difference(self):
+
+        self.lock.acquire()
+
+        total = 0
+        for diff in self.differences:
+            total += self.differences[diff]
+        mean = total / len(self.differences)
+
+        self.lock.release()
+        return mean
+
+    def handle_diff_file(self):
+        print "##########################"
+        print "Learner {} printing time differences to file".format(self.messenger.name)
+
+        filename = "../bench_data/" + str(time.time())
+
+        diff_file = open(filename, "w+")
+        pickle.dump(self.differences, diff_file)
+        diff_file.close()
+
+
