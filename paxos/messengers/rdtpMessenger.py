@@ -3,47 +3,24 @@ This module provides an implementation of the Messenger class using RDTP.
 """
 import socket
 from time import sleep
-import time
+# import time
 
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from rdtp import rdtp
+from messenger import Messenger
 
 TIMEOUT_SECONDS = 10
 BENCHMARK = True
 
-class rdtpMessenger():
+class rdtpMessenger(Messenger):
     def __init__(self, name):
+        Messenger.__init__(self)
         self.name = name
         self.destinations = {}
         self.sockets = {}
-        # messages sent, indexed by decree and proposal number
-        self.sent = {}
 
-
-    def fetch_proposal(self, n, p):
-        """
-        For benchmarking purposes, retrieve the timestamp associated with this value
-
-        @param n: the decree number
-        @param p: the proposal number
-
-        @return the timestamp given in seconds
-        """
-        return self.sent[n, p]
-
-    def stamp_proposal(self, n, p):
-        """
-        For benchmarking purposes, adds a given proposal number and a decree number to a dictionary
-        and adds a timestamp
-
-        @param n: the decree number
-        @param p: the proposal number
-
-        @return None
-        """
-        self.sent[n, p] = time.time()
 
     def _fetch_stub(self, name):
         # fetch the stub for the proposer
