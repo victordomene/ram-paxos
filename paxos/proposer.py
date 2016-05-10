@@ -23,21 +23,21 @@ class Proposer():
         self.min_quorum_size = len(self.messenger.get_quorum()) / 2 + 1
 
         # initializes the current & highest proposals to None
-        self.current_proposal = None
-        self.highest_proposal = None
+        self.proposals = {}
+        self.highest_proposals = {}
 
         # initialize the set of promised acceptors for the current proposal
-        self.promised_acceptors = set()
+        self.promised_acceptors = {}
 
         # initialize the proposal counter; this will be reset everytime
         # a decree is agreed upon. !# This may not be necessary/desired.
-        self.proposal_counter = 0
+        self.proposal_counters = {}
 
         # lock to guarantee requests are atomic and that operations on
         # the sets (such as self.promised_acceptors) will not be conflicting
         self.lock = threading.Lock()
 
-    def _init_proposal(self):
+    def _init_proposal(self, n):
         """
         Helper method that initializes a proposal (by clearing the useful
         instance variables).
@@ -45,9 +45,9 @@ class Proposer():
         Does not return.
         """
 
-        self.current_proposal = None
-        self.highest_proposal = None
-        self.promised_acceptors = set()
+        self.promised_acceptors[n] = set()
+        self.proposal_counters[n] = 0
+
 
     def propose(self, n, v, quorum):
         """
@@ -71,18 +71,18 @@ class Proposer():
         self.lock.acquire()
 
         # cannot propose if we are currently proposing something else
-        if self.current_proposal is not None:
+        if n in self.proposals:
             if PROPOSER_DEBUG:
-                print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.current_proposal.p, self.current_proposal.n)
+                print "PROPOSER_DEBUG: Attempt at proposing for decree {} when last proposal {} for decree was still in place. Restarting proposal.".format(n, self.proposals[n].p, self.proposals[n].n)
 
-            self._init_proposal()
 
-        # pick a proposal number from the counter, and add one
-        p = self.proposal_counter
-        self.proposal_counter += 1
+        self._init_proposal(n)
+
+        p = self.proposal_counters[n]
+        self.proposal_counters[n] += 1
 
         # create proposal with passed in information
-        self.current_proposal = Proposal(p, self.messenger.name, n, v)
+        self.proposals[n] = Proposal(p, self.messenger.name, n, v)
 
         # stamp the proposal with the proper timestamp
         if BENCHMARK:
@@ -97,7 +97,7 @@ class Proposer():
 
         self.lock.release()
 
-    def _check_promise_count(self):
+    def _check_promise_count(self, n):
         """
         Helper function that checks the current promise count, and sends
         accept requests to a quorum if we have enough promises.
@@ -108,29 +108,29 @@ class Proposer():
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Checking promise count: {}, when min_quorum_size is {}".format(len(self.promised_acceptors), self.min_quorum_size)
 
-        if len(self.promised_acceptors) >= self.min_quorum_size:
+        if len(self.promised_acceptors[n]) >= self.min_quorum_size:
 
             # fetch the information that will be passed to acceptors
-            p = self.current_proposal.p
-            n = self.current_proposal.n
-            v = self.current_proposal.v
+            p = self.proposals[n].p
+            n = self.proposals[n].n
+            v = self.proposals[n].v
 
             # the value must be the value corresponding to the highest-numbered
             # proposal we have seen in the quorum (if any)
-            if self.highest_proposal is not None:
-                v = self.highest_proposal.v
+            if n in self.highest_proposals and self.highest_proposals[n] is not None:
+                v = self.highest_proposals[n].v
 
                 if PROPOSER_DEBUG:
                     print "PROPOSER_DEBUG: Proposal {} forced to take value {} by Paxos conditions".format(p, v)
 
             if PROPOSER_DEBUG:
-                print "PROPOSER_DEBUG: Proposal {} with value {} sent to promised acceptors: {}".format(p, v, self.promised_acceptors)
+                print "PROPOSER_DEBUG: Proposal {} with value {} sent to promised acceptors: {}".format(p, v, self.promised_acceptors[n])
 
             # send accept request to the promised acceptors !# ??
-            self.messenger.send_accept(p, n, v, self.promised_acceptors)
+            self.messenger.send_accept(p, n, v, self.promised_acceptors[n])
 
             # reset the state kept by proposer
-            self._init_proposal()
+            self._init_proposal(n)
 
     def handle_promise(self, p, proposer, n, v, acceptor):
         """
@@ -156,7 +156,7 @@ class Proposer():
         self.lock.acquire()
 
         # we must have a current proposal set in order to handle this request
-        if self.current_proposal is None:
+        if n not in self.proposals or self.proposals[n] is None:
             if PROPOSER_DEBUG:
                 print "PROPOSER_DEBUG: Promise received when no proposal is in place; ignoring it"
 
@@ -167,9 +167,9 @@ class Proposer():
         # check if the message refers to the current proposal decree; if it
         # does not, we have nothing to do.
 
-        if n != self.current_proposal.n:
+        if n != self.proposals[n].n:
             if PROPOSER_DEBUG:
-                print "PROPOSER_DEBUG: Promise received for a different decree {} than current one {}".format(n, self.current_proposal.n)
+                print "PROPOSER_DEBUG: Promise received for a different decree {} than current one {}".format(n, self.proposals[n].n)
 
             self.lock.release()
 
@@ -184,29 +184,29 @@ class Proposer():
                 print "PROPOSER_DEBUG: Promise received for decree {} up to proposal {} with value {}, from acceptor {}".format(n, p, v, acceptor)
 
             # we may need to initiate the highest proposal here
-            if self.highest_proposal is None:
-                self.highest_proposal = Proposal(p, proposer, n, v)
+            if n not in self.highest_proposals:
+                self.highest_proposals[n] = Proposal(p, proposer, n, v)
 
             # update the value of the proposal according to the rules. Notice here
             # that p could be None
-            high_p = self.highest_proposal.p
-            high_proposer = self.highest_proposal.proposer
+            high_p = self.highest_proposals[n].p
+            high_proposer = self.highest_proposals[n].proposer
 
             if (p, proposer) > (high_p, high_proposer):
                 if PROPOSER_DEBUG:
                     print "PROPOSER_DEBUG: Updating highest_proposal to {} with value {}".format(p, v)
 
-                self.highest_proposal.v = v
-                self.highest_proposal.p = p
-                self.highest_proposal.proposer = proposer
-                self.highest_proposal.n = n
+                self.highest_proposals[n].v = v
+                self.highest_proposals[n].p = p
+                self.highest_proposals[n].proposer = proposer
+                self.highest_proposals[n].n = n
 
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Added acceptor {} to list of promised acceptors".format(acceptor)
 
         # update promised_acceptors and check whether we have enough
-        self.promised_acceptors.add(acceptor)
-        self._check_promise_count()
+        self.promised_acceptors[n].add(acceptor)
+        self._check_promise_count(n)
 
         self.lock.release()
 
@@ -226,7 +226,7 @@ class Proposer():
         @return True if we could abort proposal; False otherwise
         """
 
-        if self.current_proposal is None or self.current_proposal.p != p or self.current_proposal.proposer != proposer:
+        if self.proposals[n] is None or self.proposals[n].p != p or self.proposals[n].proposer != proposer:
             if PROPOSER_DEBUG:
                 print "PROPOSER_DEBUG: Proposal {} for proposer {} was refused by acceptor {}, but this is not our current proposal; ignoring it".format(p, proposer, acceptor)
 
@@ -235,7 +235,7 @@ class Proposer():
         self.lock.acquire()
 
         # reset the state kept by proposer
-        self._init_proposal()
+        self._init_proposal(n)
 
         if PROPOSER_DEBUG:
             print "PROPOSER_DEBUG: Proposal {} for proposer {} refused by acceptor {}; aborting".format(p, proposer, acceptor)

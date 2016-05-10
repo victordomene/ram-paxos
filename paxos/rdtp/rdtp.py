@@ -1,5 +1,7 @@
 import select
 import socket
+import time
+import random
 
 class ClientDead(Exception):
     def __str__(self):

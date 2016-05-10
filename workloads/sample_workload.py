@@ -19,15 +19,15 @@ from paxos.messengers import rdtpMessenger
 from paxos.receivers import rdtpReceiver
 from paxos import proposer, acceptor, learner
 
-NETWORK_SIZE = 10
+NETWORK_SIZE = 40
 HOST = "localhost"
-START_PORT = 6666
+START_PORT = 19566
 
-def initialize_rdtp_vm(name):
-    return VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver, use_disk=True)
+def initialize_rdtp_vm(name, use_disk):
+    return VM(name, rdtpMessenger.rdtpMessenger, rdtpReceiver.rdtpReceiver, use_disk)
 
-def initialize_grpc_vm(name):
-    return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver, use_disk=True)
+def initialize_grpc_vm(name, use_disk):
+    return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver, use_disk)
 
 def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
     """
@@ -43,7 +43,7 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
     """
 
     # initialize the virtual machine with my name
-    vm = initialize_vm(name)
+    vm = initialize_vm(name, use_disk=True)
 
     # fetch the host/port information from the network for me
     host, port = network[name]

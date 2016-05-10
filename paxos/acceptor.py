@@ -4,8 +4,12 @@ This module implements an acceptor, using the specified messenger.
 
 from proposal import Proposal
 import threading
+import time
+import os
+import random
 
 ACCEPTOR_DEBUG = False
+USE_DISK = True
 
 class Acceptor():
     """
@@ -24,6 +28,10 @@ class Acceptor():
         # a dictionary that maps decree => latest proposal this machine
         # has accepted
         self.accepted_proposals = {}
+
+        if USE_DISK:
+            self.outfile = open(self.messenger.name + '-acceptor.out', 'w')
+            self.infile = open('cat', 'r')
 
         # a dictionary that maps decree => latest promise this machine
         # has made
@@ -48,6 +56,8 @@ class Acceptor():
         @return True if promise is made; False otherwise
         """
 
+        self.latency()
+
         self.lock.acquire()
 
         # We have never replied to a prepare request for this decree
@@ -60,6 +70,10 @@ class Acceptor():
 
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = (p, proposer)
+
+            if USE_DISK:
+            	self.write('{},{},{}'.format(n, p, proposer))
+
 
             self.lock.release()
 
@@ -94,6 +108,7 @@ class Acceptor():
 
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = (p, proposer)
+            self.write('{},{},{}\n'.format(n, p, proposer))
 
             self.lock.release()
 
@@ -113,9 +128,13 @@ class Acceptor():
         @return True if accepted; False otherwise
         """
 
+        self.latency()
+
         self.lock.acquire()
 
         # We promised not to accept any proposals less than promises[n]
+        dumb = self.infile.read()
+
         if n in self.promises and self.promises[n] < (p, proposer):
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Promised not to answer proposals less than {} for decree {}".format(self.promises[n], n)
@@ -152,3 +171,17 @@ class Acceptor():
         self.lock.release()
 
         return True
+
+
+    def latency(self):
+        return
+        time.sleep(0.005 + random.random() / 30.)
+
+    def sync(self):
+        self.outfile.close()
+        self.outfile = open(self.messenger.name + '-acceptor.out', 'a+')
+
+    def write(self, what):
+        for i in xrange(500):
+            self.outfile.write(what)
+        self.sync()
