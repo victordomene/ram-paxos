@@ -9,7 +9,6 @@ import os
 import random
 
 ACCEPTOR_DEBUG = False
-USE_DISK = False
 
 class Acceptor():
     """
@@ -21,15 +20,16 @@ class Acceptor():
     @param messenger: the messenger instance that will be used
     """
 
-    def __init__(self, messenger):
+    def __init__(self, messenger, use_disk):
         # messenger that is used for this acceptor
         self.messenger = messenger
+        self.use_disk = use_disk
 
         # a dictionary that maps decree => latest proposal this machine
         # has accepted
         self.accepted_proposals = {}
 
-        if USE_DISK:
+        if self.use_disk:
             self.outfile = open(self.messenger.name + '-acceptor.out', 'w')
             self.infile = open('cat', 'r')
 
@@ -131,9 +131,10 @@ class Acceptor():
 
         self.lock.acquire()
 
-        # We promised not to accept any proposals less than promises[n]
-        dumb = self.infile.read()
+        if self.use_disk:
+            dumb = self.infile.read()
 
+        # We promised not to accept any proposals less than promises[n]
         if n in self.promises and self.promises[n] < (p, proposer):
             if ACCEPTOR_DEBUG:
                 print "ACCEPTOR_DEBUG: Promised not to answer proposals less than {} for decree {}".format(self.promises[n], n)
@@ -182,11 +183,11 @@ class Acceptor():
 
     def write(self, what):
         for i in xrange(5000):
-            if USE_DISK:
+            if self.use_disk:
                 # Write what to disk
                 self.outfile.write(what)
             else:
                 # Write what to RAM
                 a = what[:]
-        if USE_DISK:
+        if self.use_disk:
             self.sync()

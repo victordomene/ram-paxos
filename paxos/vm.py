@@ -12,7 +12,7 @@ class VM():
         self.messenger = messengerClass(name)
 
         self.proposer = proposer.Proposer(self.messenger)
-        self.acceptor = acceptor.Acceptor(self.messenger)
+        self.acceptor = acceptor.Acceptor(self.messenger, use_disk)
         self.learner = learner.Learner(self.messenger, use_disk)
 
         self.receiver = receiverClass(self.proposer, self.acceptor, self.learner)
