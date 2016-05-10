@@ -44,6 +44,10 @@ sending a given command to the VM running at (host, port). The possible commands
 
 Where `print_ledger` prints all of the passed decrees learned by the given VM. The other two commands are used to print the differences in time between the time a proposal is sent and the time the decree is passed.
 
+A common usage would be to spawn a workload with some VM running in port 6666 in a terminal window, and then open the client in another window and invoke
+
+`localhost:6666:print_ledger`
+
 
 ## Documentation
 
