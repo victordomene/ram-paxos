@@ -96,9 +96,6 @@ class Learner():
 
         self.lock.release()
 
-        if len(self.differences) == 10:
-            self.handle_print_difference_mean()
-
         return True
 
     def handle_print_ledger(self):
