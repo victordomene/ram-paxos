@@ -141,29 +141,6 @@ class Learner():
 
         self.lock.release()
 
-    # as opposed to printing the differences, return a list of the differences
-    def return_differences(self):
-        self.lock.acquire()
-
-        differences = self.differences.values()
-
-        self.lock.release()
-
-        return differences
-
-
-    def mean_difference(self):
-
-        self.lock.acquire()
-
-        total = 0
-        for diff in self.differences:
-            total += self.differences[diff]
-        mean = total / len(self.differences)
-
-        self.lock.release()
-        return mean
-
     def handle_diff_file(self):
         print "##########################"
         print "Learner {} printing time differences to file".format(self.messenger.name)
