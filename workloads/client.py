@@ -24,13 +24,7 @@ def run():
     while True:
         host, port, comm = raw_input().split(":")
         sock = init_socket(host, int(port))
-
-        if comm == 'ledger':
-            rdtp.send(sock, 0, "print_ledger")
-        elif comm == 'diff':
-            rdtp.send(sock, 0, "print_differences")
-        elif comm == 'diff_file':
-            rdtp.send(sock, 0, "diff_file")
+        rdtp.send(sock, 0, comm)
 
 
 

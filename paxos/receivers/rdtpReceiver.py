@@ -136,6 +136,10 @@ class rdtpReceiver():
                         print 'Will print differences'
                         self.handle_print_differences()
 
+                    elif method == 'print_difference_mean':
+                        print 'Will print difference mean'
+                        self.learner.handle_print_difference_mean()
+
                     elif method == 'diff_file':
                         print 'Will print differences to file'
                         self.handle_diff_file()

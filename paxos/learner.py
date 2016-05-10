@@ -120,6 +120,20 @@ class Learner():
 
         self.lock.release()
 
+    def handle_print_difference_mean(self):
+        print "##########################"
+        print "Learner {} printing MEAN of time differences".format(self.messenger.name)
+
+        self.lock.acquire()
+
+        total = 0.
+        for diff in self.differences:
+        	total += self.differences[diff]
+
+        print "Mean of Differences: {}".format(total / len(self.differences))
+
+        self.lock.release()
+
     # as opposed to printing the differences, return a list of the differences
     def return_differences(self):
         self.lock.acquire()
