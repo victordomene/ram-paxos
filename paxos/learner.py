@@ -8,7 +8,7 @@ import time
 import pickle
 
 LEARNER_DEBUG = False
-BENCHMARK = True
+BENCHMARK = False
 
 class Learner():
     """
@@ -26,7 +26,7 @@ class Learner():
         self.ledger = {}
 
         if self.use_disk:
-        	self.outfile = open('ledger-%s.out'.format(self.messenger.name), 'w')
+        	self.outfile = open('ledger-{}.out'.format(self.messenger.name), 'w')
 
         # a dictionary that maps (decree, proposal) => set of machines
         # that have accepted that proposal for that decree

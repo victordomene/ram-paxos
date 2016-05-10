@@ -132,7 +132,6 @@ def main():
     for name in network.keys():
         # these are all proposers; ignore them here
         if name < "M" + str(NUM_PROPOSERS):
-            print name
             continue
 
         replicas = Process(target = replicas_entrypoint, args = (name, network))
