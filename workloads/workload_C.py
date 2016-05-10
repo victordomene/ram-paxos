@@ -9,7 +9,10 @@ proposer_entrypoint / replicas_entrypoint. Just make sure that the workload
 does not start with replicas running gRPC and proposer running RDTP.
 
 After 10 decrees, the first proposer will die, and the second proposer will
-take over.
+take over. Notice that the machines will continue to send messages to the dead
+server, without caring, and that will probably result in some errors showing
+up on the screen. This is expected, but Paxos algorithm does not get stuck
+on these connection issues. (You can verify this by running client.py).
 """
 
 import sys
@@ -27,7 +30,7 @@ from paxos.messengers import rdtpMessenger
 from paxos.receivers import rdtpReceiver
 from paxos import proposer, acceptor, learner
 
-NETWORK_SIZE = 10
+NETWORK_SIZE = 5
 HOST = "localhost"
 START_PORT = 6666
 

@@ -24,7 +24,7 @@ from paxos.messengers import rdtpMessenger
 from paxos.receivers import rdtpReceiver
 from paxos import proposer, acceptor, learner
 
-NETWORK_SIZE = 10
+NETWORK_SIZE = 5
 NUM_PROPOSERS = 3
 HOST = "localhost"
 START_PORT = 6666

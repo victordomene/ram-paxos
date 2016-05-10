@@ -133,7 +133,7 @@ class Acceptor():
 
         if self.use_disk:
             dumb = self.infile.read()
-
+        
         # We promised not to accept any proposals less than promises[n]
         if n in self.promises and self.promises[n] < (p, proposer):
             if ACCEPTOR_DEBUG:
@@ -146,12 +146,18 @@ class Acceptor():
             return False
 
         # If everything is fine, we proceed to accept
-        # !# seems like there is an issue with < here...
         if n in self.accepted_proposals:
             acc_p = self.accepted_proposals[n].p
             acc_proposer = self.accepted_proposals[n].proposer
+            
+            if ACCEPTOR_DEBUG:
+                print "ACCEPTOR_DEBUG: Accepted proposal {} for proposer {}, which is higher than {} for {}".format(acc_p, acc_proposer, p, proposer)
 
-            assert((acc_p, acc_proposer) <= (p, proposer))
+            self.messenger.send_refuse(p, proposer, n, proposer)
+
+            self.lock.release()
+
+            return False
 
         self.accepted_proposals[n] = Proposal(p, proposer, n, v)
 
