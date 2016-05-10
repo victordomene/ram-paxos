@@ -2,6 +2,11 @@
 This workload presents a simple interface that can be reused in other workloads.
 It summary, it runs several subprocesses using the multiprocessing package,
 makes the connections between them, and then starts working.
+
+This particular workload spawns NETWORK_SIZE machines, two of which are 
+proposer. We can run with either gRPC or RDTP by changing start_vm or
+proposer_entrypoint / replicas_entrypoint. Just make sure that the workload
+does not start with replicas running gRPC and proposer running RDTP.
 """
 
 import sys
@@ -68,7 +73,7 @@ def proposer_entrypoint(name, network):
     This must simply call start_rdtp_vm with our name and network. 
     """
     # start an rdtp VM with our name and start serving 
-    vm = start_vm(name, network, initialize_grpc_vm)
+    vm = start_vm(name, network)
 
     # sleep a little bit before trying to send proposals
     # (cheating for bootstrap)
@@ -91,7 +96,7 @@ def proposer_entrypoint(name, network):
 
 def replicas_entrypoint(name, network):
     # start an rdtp VM with our name and start serving
-    vm = start_vm(name, network, initialize_grpc_vm)
+    vm = start_vm(name, network)
 
     # simply sleep forever, the server will handle the
     # necessary requests

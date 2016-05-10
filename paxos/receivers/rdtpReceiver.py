@@ -116,7 +116,7 @@ class rdtpReceiver():
                             self.usage_args(method, len(args), 5)
                             return
 
-                        p, n, acceptor = int(args[1]), str(args[2]), int(args[3]), str(args[4])
+                        p, proposer, n, acceptor = int(args[1]), str(args[2]), int(args[3]), str(args[4])
                         self.handle_refuse(p, proposer, n, acceptor)
 
                     elif method == 'send_learn':

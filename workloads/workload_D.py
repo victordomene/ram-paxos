@@ -2,6 +2,11 @@
 This workload presents a simple interface that can be reused in other workloads.
 It summary, it runs several subprocesses using the multiprocessing package,
 makes the connections between them, and then starts working.
+
+This particular workload spawns NETWORK_SIZE machines, NUM_PROPOSERS of which are 
+proposers. We can run with either gRPC or RDTP by changing start_vm or
+proposer_entrypoint / replicas_entrypoint. Just make sure that the workload
+does not start with replicas running gRPC and proposer running RDTP.
 """
 
 import sys
@@ -20,6 +25,7 @@ from paxos.receivers import rdtpReceiver
 from paxos import proposer, acceptor, learner
 
 NETWORK_SIZE = 10
+NUM_PROPOSERS = 3
 HOST = "localhost"
 START_PORT = 6666
 
@@ -61,7 +67,7 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
 
     return vm 
 
-def dying_proposer_entrypoint(name, network):
+def proposer_entrypoint(name, network):
     """
     Thread entrypoint for a proposer.
 
@@ -69,34 +75,6 @@ def dying_proposer_entrypoint(name, network):
     """
     # start an rdtp VM with our name and start serving 
     vm = start_vm(name, network)
-
-    # sleep a little bit before trying to send proposals
-    # (cheating for bootstrap)
-    time.sleep(2)
-
-    # decree number and value; these will change
-    n = 0
-    v = 1000
-
-    while n < 10:
-        # propose values
-        vm.propose_to_quorum(n, v)
-
-        # update values for next round
-        n += 1
-        v -= 1
-
-        # give some time before proposing again
-        time.sleep(1)
-
-def surviving_proposer_entrypoint(name, network):
-    """
-    Thread entrypoint for a proposer.
-
-    This must simply call start_rdtp_vm with our name and network. 
-    """
-    # start an rdtp VM with our name and start serving 
-    vm = start_vm(name, network, initialize_grpc_vm)
 
     # sleep a little bit before trying to send proposals
     # (cheating for bootstrap)
@@ -119,7 +97,7 @@ def surviving_proposer_entrypoint(name, network):
 
 def replicas_entrypoint(name, network):
     # start an rdtp VM with our name and start serving
-    vm = start_vm(name, network, initialize_grpc_vm)
+    vm = start_vm(name, network)
 
     # simply sleep forever, the server will handle the
     # necessary requests
@@ -146,16 +124,15 @@ def main():
         network[name] = (HOST, START_PORT + i)
 
     # initialize the proposer process
-    proposer = Process(target = dying_proposer_entrypoint, args = ("M0", network))
-    proposer.start()
+    for i in xrange(NUM_PROPOSERS):
+        proposer = Process(target = proposer_entrypoint, args = ("M" + str(i), network))
+        proposer.start()
     
-    proposer = Process(target = surviving_proposer_entrypoint, args = ("M1", network))
-    proposer.start()
-
     # initialize all the replicas
     for name in network.keys():
-        # M0 is our proposer; we ignore it
-        if name == "M0" or name == "M1":
+        # these are all proposers; ignore them here
+        if name < "M" + str(NUM_PROPOSERS):
+            print name
             continue
 
         replicas = Process(target = replicas_entrypoint, args = (name, network))
