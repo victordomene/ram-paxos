@@ -48,6 +48,8 @@ A common usage would be to spawn a workload with some VM running in port 6666 in
 
 `localhost:6666:print_ledger`
 
+Please note that, as of now, the Paxos client only works with systems using the RDTP message passing mechanism. Currently, the client cannot send requests to VMs using Google RPC.
+
 
 ## Documentation
 
