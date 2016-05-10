@@ -314,17 +314,75 @@ what those benchmarks should be (and timing constraints), we omit those.
 
 ### RDTP, RAM vs. Disk, fixed machines, variable proposal, no latency
 
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RDTP_fixed_machines_variable_proposal_no_latency.png}
+\end{subfigure}
+\end{figure}
+
 ### gRPC, RAM vs. Disk, fixed machines, variable proposal, no latency
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{GRPC_fixed_machines_variable_proposal_no_latency.png}
+\end{subfigure}
+\end{figure}
 
 ### RDTP, RAM vs. Disk, variable machines, fixed proposal, no latency
 
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RAM_RDTP_variable_machines_fixed_proposal_no_latency.png}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{disk_RDTP_variable_machines_fixed_proposal_no_latency.png}
+\end{subfigure}
+\end{figure}
+
 ### RDTP, RAM vs. Disk, variable machines, fixed proposal, latency
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{RAM_RDTP_variable_machines_fixed_proposal_latency.png}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{disk_RDTP_variable_machines_fixed_proposal_latency.png}
+\end{subfigure}
+\end{figure}
 
 ## Workload B
 
 ### RDTP, RAM vs. Disk, fixed machines, variable proposal, no latency
 
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{two_proposers_RDTP_fixed_machines_variable_proposal_no_latency.png}
+\end{subfigure}
+\end{figure}
+
 ### gRPC, RAM vs. Disk, fixed machines, variable proposal, no latency
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=0.8\textwidth]{two_proposers_GRPC_fixed_machines_variable_proposal_no_latency.png}
+\end{subfigure}
+\end{figure}
+
+![Graph](two_proposers_GRPC_fixed_machines_variable_proposal_no_latency.png)
 
 # Conclusions
 
