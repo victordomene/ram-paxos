@@ -1,6 +1,9 @@
 """
 This module provides an implementation of the Receiver class using Google's
 RPC Protocol (gRPC).
+
+For the specific documentation of the arguments these methods take and 
+what they do at a high level, refer to receiver.py.
 """
 
 from grpc.beta import implementations

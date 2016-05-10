@@ -1,6 +1,9 @@
 """
 This module provides an implementation of the Receiver class using our own
-RDTP Protocol, which we wrote for the Chat Assignment in CS262
+RDTP Protocol, which we wrote for the Chat Assignment in CS262.
+
+For the specific documentation of the arguments these methods take and
+what they do at a high level, refer to receiver.py.
 """
 
 import socket
@@ -17,13 +20,11 @@ RECEIVER_DEBUG = False
 
 MAX_PENDING_CLIENTS = 50
 
-
 class rdtpReceiver():
     def __init__(self, proposer, acceptor, learner):
         self.proposer = proposer
         self.acceptor = acceptor
         self.learner = learner
-
 
     def serve(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -35,13 +36,13 @@ class rdtpReceiver():
 
         print 'Started listening on {}:{}'.format(host, port)
 
-        thread.start_new_thread(self.serve_forever, ())
+        thread.start_new_thread(self._serve_forever, ())
 
     def usage_args(self, method, num, expected):
         if RECEIVER_DEBUG:
             print "RECEIVER_DEBUG: Received {} method with {} arguments; expected {}".format(method, num, expected)
 
-    def serve_forever(self):
+    def _serve_forever(self):
         self.socket.listen(MAX_PENDING_CLIENTS)
 
         while 1:

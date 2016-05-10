@@ -1,6 +1,9 @@
 """
 This module provides an implementation of the Messenger class using Google's
 RPC Protocol (gRPC).
+
+For the specific documentation of the arguments these methods take and 
+what they do at a high level, refer to messenger.py.
 """
 
 from grpc.beta import implementations
@@ -57,22 +60,6 @@ class grpcMessenger(Messenger):
         return self.destinations.keys()
 
     def add_destination(self, name, host, port):
-        """
-        Adds a host/port combination to the list of possible destinations
-        for messages. Basically, this tells our messenger where each machine
-        can be found. It will store the host/port combination in a dictionary
-        indexed by the given name.
-
-        If a name already exists in the dictionary, this function will update
-        the information for the name.
-
-        @param name: the name given to this host/port combination
-        @param host: the host to be added
-        @param port: the port used in that host
-
-        @return True if successfully added; False otherwise
-        """
-
         # uses gRPC to create a channel and a stub
         channel = implementations.insecure_channel(host, port)
         stub = paxos_pb2.beta_create_VM_stub(channel)

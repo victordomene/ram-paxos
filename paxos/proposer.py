@@ -48,7 +48,6 @@ class Proposer():
         self.promised_acceptors[n] = set()
         self.proposal_counters[n] = 0
 
-
     def propose(self, n, v, quorum):
         """
         Interface to start a Paxos proposal. Simply does a lot of

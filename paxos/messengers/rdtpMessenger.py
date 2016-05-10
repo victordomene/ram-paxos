@@ -1,5 +1,9 @@
 """
-This module provides an implementation of the Messenger class using RDTP.
+This module provides an implementation of the Messenger class using our own
+RDTP Protocol, which we wrote for the Chat Assignment in CS262.
+
+For the specific documentation of the arguments these methods take and 
+what they do at a high level, refer to messenger.py.
 """
 import socket
 from time import sleep

@@ -56,7 +56,7 @@ class Acceptor():
         @return True if promise is made; False otherwise
         """
 
-        self.latency()
+        self._latency()
 
         self.lock.acquire()
 
@@ -71,7 +71,7 @@ class Acceptor():
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = (p, proposer)
 
-            self.write('{},{},{}'.format(n, p, proposer))
+            self._write('{},{},{}'.format(n, p, proposer))
 
 
             self.lock.release()
@@ -107,7 +107,7 @@ class Acceptor():
 
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = (p, proposer)
-            self.write('{},{},{}\n'.format(n, p, proposer))
+            self._write('{},{},{}\n'.format(n, p, proposer))
 
             self.lock.release()
 
@@ -127,7 +127,7 @@ class Acceptor():
         @return True if accepted; False otherwise
         """
 
-        self.latency()
+        self._latency()
 
         self.lock.acquire()
 
@@ -172,16 +172,36 @@ class Acceptor():
 
         return True
 
+    def _latency(self):
+        """
+        Adds latency to this acceptor's receival of messages. This simply
+        sleeps for a random amount of time centered around 0.005.
+        
+        To turn latency off, comment the early return; uncomment it to
+        turn it on.
+        """
 
-    def latency(self):
         return
         time.sleep(0.005 + random.random() / 30.)
 
-    def sync(self):
+    def _sync(self):
+        """
+        Forces a sync of the outfile to disk. 
+
+        Python has no clear interface to actually doing this nicely,
+        so we force it by closing and opening the file.
+        """
+
         self.outfile.close()
         self.outfile = open(self.messenger.name + '-acceptor.out', 'a+')
 
-    def write(self, what):
+    def _write(self, what):
+        """
+        Write something to disk. This is a simple wrapper; to simulate
+        proposals that are larger, we simply increase the number of times
+        this method loops.
+        """
+
         for i in xrange(5):
             if self.use_disk:
                 # Write what to disk
@@ -190,4 +210,4 @@ class Acceptor():
                 # Write what to RAM
                 a = what[:]
         if self.use_disk:
-            self.sync()
+            self._sync()

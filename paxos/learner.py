@@ -45,6 +45,19 @@ class Learner():
         self.differences = {}
 
     def write_to_ledger(self, p, proposer, n, v):
+        """
+        Write a chosen value to the learner's ledger. If we are supposed
+        to write to disk (by passing in the appropriate parameters),
+        then we do so here.
+
+        @param p: the proposal number chosen
+        @param proposer: the proposer who proposed the chosen p
+        @param n: the decree this refers to
+        @param v: the value chosen
+
+        Does not return.
+        """
+
         if LEARNER_DEBUG:
             print "LEARNER_DEBUG: Writing proposal {} from proposer {} for decree {} with value {} to learner {}".format(p, proposer, n, v, self.messenger.name)
 
