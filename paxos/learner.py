@@ -96,6 +96,9 @@ class Learner():
 
         self.lock.release()
 
+        if len(self.differences) == 10:
+            self.handle_print_difference_mean()
+
         return True
 
     def handle_print_ledger(self):
@@ -123,6 +126,10 @@ class Learner():
     def handle_print_difference_mean(self):
         print "##########################"
         print "Learner {} printing MEAN of time differences".format(self.messenger.name)
+        if self.use_disk:
+            print "Use Disk: TRUE"
+        else:
+            print "User Disk: FALSE"
 
         self.lock.acquire()
 
@@ -130,7 +137,10 @@ class Learner():
         for diff in self.differences:
         	total += self.differences[diff]
 
-        print "Mean of Differences: {}. Sample size: {}".format(total / len(self.differences), len(self.differences))
+        if len(self.differences) > 0:
+            print "Mean of Differences: {}. Sample size: {}".format(total / len(self.differences), len(self.differences))
+        else:
+        	print "Division by 0 in handle_print_difference_mean"
 
         self.lock.release()
 

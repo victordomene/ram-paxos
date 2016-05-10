@@ -182,7 +182,7 @@ class Acceptor():
         self.outfile = open(self.messenger.name + '-acceptor.out', 'a+')
 
     def write(self, what):
-        for i in xrange(5000):
+        for i in xrange(5):
             if self.use_disk:
                 # Write what to disk
                 self.outfile.write(what)
