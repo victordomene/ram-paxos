@@ -115,7 +115,7 @@ class grpcMessenger(Messenger):
 
             # finally send message to this acceptor
             response = stub.handle_accept.future(request, TIMEOUT_SECONDS)
-            
+
             response.add_done_callback(ignore_accept)
 
         return True
@@ -133,7 +133,7 @@ class grpcMessenger(Messenger):
 
         # finally send promise back to proposer
         response = stub.handle_promise.future(request, TIMEOUT_SECONDS)
-        
+
         response.add_done_callback(ignore_promise)
 
         return True
@@ -151,7 +151,7 @@ class grpcMessenger(Messenger):
 
         # finally send refusal back to proposer
         response = stub.handle_refuse.future(request, TIMEOUT_SECONDS)
-        
+
         response.add_done_callback(ignore_refuse)
 
         return True
@@ -169,7 +169,7 @@ class grpcMessenger(Messenger):
 
         # finally send message to learner
         response = stub.handle_learn.future(request, TIMEOUT_SECONDS)
-        
+
         response.add_done_callback(ignore_learn)
 
         return True
