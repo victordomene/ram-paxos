@@ -8,9 +8,10 @@ and when it can remain in RAM.
 
 ## Components
 
+For the architecture, check out `/writeup/final_paper.pdf`. The core code can be found in `/paxos/`.
 
 
-## Setup instructions
+## Setup instructions and Usage
 
 This code has been tested on both Mac OS X El Capitan and the latest release of Ubuntu.
 
@@ -29,8 +30,6 @@ the gRPC library for Python:
 `pip install grpcio`
 
 This assumes you have `pip` installed; this is easy to get online.
-
-## Usage
 
 ## Documentation
 
