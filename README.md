@@ -15,12 +15,11 @@ For the architecture, check out `/writeup/final_paper.pdf`. The core code can be
 
 This code has been tested on both Mac OS X El Capitan and the latest release of Ubuntu.
 
-Clone this repository, and use Python on any of the workloads in `/workloads/`
-in order to test the implementation. Documentation on each workload is provided
+Clone this repository, and use Python on any of the workloads in `/workloads/` or the tests in `/paxos/test/` in order to test the implementation. Documentation on each workload/test is provided
 inside its `.py` file.
 
 This repository includes a compiled version of the Protocol Buffers used in
-gRPC. If you want to compile it, follow the instructions in 
+gRPC. If you want to compile it, follow the instructions in
 
 `https://developers.google.com/protocol-buffers/`
 
