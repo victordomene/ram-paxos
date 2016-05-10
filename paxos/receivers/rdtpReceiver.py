@@ -204,3 +204,6 @@ class rdtpReceiver():
             print "RECEIEVER_DEBUG: Writing Differences to file"
 
         return self.learner.handle_diff_file()
+
+    def stop_server(self):
+        pass

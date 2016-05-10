@@ -43,7 +43,7 @@ def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
     """
 
     # initialize the virtual machine with my name
-    vm = initialize_vm(name, use_disk=True)
+    vm = initialize_vm(name, use_disk=False)
 
     # fetch the host/port information from the network for me
     host, port = network[name]
