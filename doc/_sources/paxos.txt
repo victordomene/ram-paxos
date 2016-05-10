@@ -1,0 +1,64 @@
+paxos package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    paxos.messengers
+    paxos.protobufs
+    paxos.rdtp
+    paxos.receivers
+
+Submodules
+----------
+
+paxos.acceptor module
+---------------------
+
+.. automodule:: paxos.acceptor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+paxos.learner module
+--------------------
+
+.. automodule:: paxos.learner
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+paxos.proposal module
+---------------------
+
+.. automodule:: paxos.proposal
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+paxos.proposer module
+---------------------
+
+.. automodule:: paxos.proposer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+paxos.vm module
+---------------
+
+.. automodule:: paxos.vm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: paxos
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -61,7 +61,7 @@ class Messenger():
         return
 
     @abstractmethod
-    def send_accept_request(self):
+    def send_accept(self):
         """
         This method should be used exclusively by a Proposer.
 
@@ -98,7 +98,7 @@ class Messenger():
         return
 
     @abstractmethod
-    def send_refuse_proposal(self):
+    def send_refuse(self):
         """
         This method should be used exclusively by an Acceptor.
 
@@ -115,7 +115,7 @@ class Messenger():
         return
 
     @abstractmethod
-    def send_accepted(self):
+    def send_learn(self):
         """
         This method should be used exclusively by an Acceptor.
 
@@ -156,5 +156,3 @@ class Messenger():
         @return None
         """
         self.sent[n, p] = time.time()
-
-

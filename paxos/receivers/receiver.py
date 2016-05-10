@@ -36,7 +36,7 @@ class Receiver():
 		return
 
 	@abstractmethod
-	def handle_accept_request(self):
+	def handle_accept(self):
 		"""
 		This method should be used exclusively by an Acceptor.
 
@@ -57,7 +57,7 @@ class Receiver():
 		return
 
 	@abstractmethod
-	def handle_refuse_proposal(self):
+	def handle_refuse(self):
 		"""
 		This method should be used exclusively by a Proposer.
 
@@ -67,11 +67,11 @@ class Receiver():
 		return
 
 	@abstractmethod
-	def handle_accepted(self):
+	def handle_learn(self):
 		"""
 		This method should be used exclusively by a Learner.
 
-		Responds appropriately to an accepted request. This must check that
+		Responds appropriately to a learnrequest. This must check that
 		enough people have accepted this value for this decree, and if so, it
 		must add the decree to a "law book".
 		"""

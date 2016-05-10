@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>paxos package &mdash; RAM-ified Part-Time Parliament 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RAM-ified Part-Time Parliament 0.0.1 documentation" href="index.html" />
+    <link rel="next" title="paxos.messengers package" href="paxos.messengers.html" />
+    <link rel="prev" title="Welcome to RAM-ified Part-Time Parliament’s documentation!" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="paxos-package">
+<h1>paxos package<a class="headerlink" href="#paxos-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="paxos.messengers.html">paxos.messengers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="paxos.messengers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.messengers.html#module-paxos.messengers.messenger">paxos.messengers.messenger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.messengers.html#module-paxos.messengers.rdtpMessenger">paxos.messengers.rdtpMessenger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.messengers.html#module-paxos.messengers.rpcMessenger">paxos.messengers.rpcMessenger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.messengers.html#module-paxos.messengers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="paxos.protobufs.html">paxos.protobufs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="paxos.protobufs.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.protobufs.html#module-paxos.protobufs.paxos_pb2">paxos.protobufs.paxos_pb2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.protobufs.html#module-paxos.protobufs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="paxos.rdtp.html">paxos.rdtp package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="paxos.rdtp.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.rdtp.html#module-paxos.rdtp.rdtp">paxos.rdtp.rdtp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.rdtp.html#module-paxos.rdtp">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="paxos.receivers.html">paxos.receivers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="paxos.receivers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.receivers.html#module-paxos.receivers.rdtpReceiver">paxos.receivers.rdtpReceiver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.receivers.html#module-paxos.receivers.receiver">paxos.receivers.receiver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.receivers.html#module-paxos.receivers.rpcReceiver">paxos.receivers.rpcReceiver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="paxos.receivers.html#module-paxos.receivers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-paxos.acceptor">
+<span id="paxos-acceptor-module"></span><h2>paxos.acceptor module<a class="headerlink" href="#module-paxos.acceptor" title="Permalink to this headline">¶</a></h2>
+<p>This module implements an acceptor, using the specified messenger.</p>
+<dl class="class">
+<dt id="paxos.acceptor.Acceptor">
+<em class="property">class </em><code class="descclassname">paxos.acceptor.</code><code class="descname">Acceptor</code><span class="sig-paren">(</span><em>messenger</em>, <em>use_disk</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.acceptor.Acceptor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of a Paxon acceptor. Using some optimizations, we need to
+keep track of (only) the highest proposal accepted by this acceptor for
+every decree that we have voted on (both its number and its value). We do
+this by keeping a dictionary that maps decrees to Proposal objects.</p>
+<p>&#64;param messenger: the messenger instance that will be used</p>
+<dl class="method">
+<dt id="paxos.acceptor.Acceptor.handle_accept">
+<code class="descname">handle_accept</code><span class="sig-paren">(</span><em>p</em>, <em>n</em>, <em>v</em>, <em>proposer</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.acceptor.Acceptor.handle_accept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles an accept request that has been received. This will always
+succeed, unless we promised a proposal with a higher number that we
+would not do so.</p>
+<p>&#64;param p: the proposal number in question
+&#64;param n: the decree number in question
+&#64;param v: the value proposed
+&#64;param proposer: the proposer to whom we must respond</p>
+<p>&#64;return True if accepted; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.acceptor.Acceptor.handle_prepare">
+<code class="descname">handle_prepare</code><span class="sig-paren">(</span><em>p</em>, <em>n</em>, <em>proposer</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.acceptor.Acceptor.handle_prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles a prepare request that has been received. This will succeed if
+the proposal number is higher than any other prepare request that we
+have already responded to. In case of success, this must promise the
+proposer that we will not accept any other proposal with lower number
+than this one.</p>
+<p>&#64;param p: the proposal number in question
+&#64;param n: the decree number in question
+&#64;param proposer: the proposer to whom we must respond</p>
+<p>&#64;return True if promise is made; False otherwise</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.learner">
+<span id="paxos-learner-module"></span><h2>paxos.learner module<a class="headerlink" href="#module-paxos.learner" title="Permalink to this headline">¶</a></h2>
+<p>This module implements a learner, using the specified messenger.</p>
+<dl class="class">
+<dt id="paxos.learner.Learner">
+<em class="property">class </em><code class="descclassname">paxos.learner.</code><code class="descname">Learner</code><span class="sig-paren">(</span><em>messenger</em>, <em>use_disk</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.learner.Learner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of a Paxon learner.</p>
+<p>&#64;param messenger: the messenger instance that will be used</p>
+<dl class="method">
+<dt id="paxos.learner.Learner.handle_diff_file">
+<code class="descname">handle_diff_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.learner.Learner.handle_diff_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the timing differences to a file for this given learner.</p>
+<p>This is the difference between the time a proposal starts, and the
+time the learner (in the same VM) actually learned that the proposal
+passed.</p>
+<p>Notice that this is not a necessary function to Paxos; it only does
+benchmarking.</p>
+<p>Does not return.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.learner.Learner.handle_learn">
+<code class="descname">handle_learn</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em>, <em>acceptor</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.learner.Learner.handle_learn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the event of an acceptor voting for a proposal.</p>
+<p>&#64;param p: the proposal number in question
+&#64;param n: the decree number in question
+&#64;param v: the value accepted
+&#64;param acceptor: the acceptor who has accepted this value</p>
+<p>Does not return.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.learner.Learner.handle_print_difference_mean">
+<code class="descname">handle_print_difference_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.learner.Learner.handle_print_difference_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the mean of the time differences for this learner. This time
+difference refers to the same time differences in handle_diff_file:
+it is the difference between the time when a proposer started a proposal,
+and the time when the corresponding learner learnt it.</p>
+<p>This is the difference between the time a proposal starts, and the
+time the learner (in the same VM) actually learned that the proposal
+passed.</p>
+<p>Notice that this is not a necessary function to Paxos; it only does
+benchmarking.</p>
+<p>Does not return.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.learner.Learner.handle_print_differences">
+<code class="descname">handle_print_differences</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.learner.Learner.handle_print_differences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the mean of the time differences for this learner. This time
+difference refers to the same time differences in handle_diff_file:
+it is the difference between the time when a proposer started a proposal,
+and the time when the corresponding learner learnt it.</p>
+<p>Does not return.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.learner.Learner.handle_print_ledger">
+<code class="descname">handle_print_ledger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.learner.Learner.handle_print_ledger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simply prints out this learner&#8217;s current ledger.</p>
+<p>Does not return.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.learner.Learner.write_to_ledger">
+<code class="descname">write_to_ledger</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.learner.Learner.write_to_ledger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a chosen value to the learner&#8217;s ledger. If we are supposed
+to write to disk (by passing in the appropriate parameters),
+then we do so here.</p>
+<p>&#64;param p: the proposal number chosen
+&#64;param proposer: the proposer who proposed the chosen p
+&#64;param n: the decree this refers to
+&#64;param v: the value chosen</p>
+<p>Does not return.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.proposal">
+<span id="paxos-proposal-module"></span><h2>paxos.proposal module<a class="headerlink" href="#module-paxos.proposal" title="Permalink to this headline">¶</a></h2>
+<p>This module implements a proposal.</p>
+<dl class="class">
+<dt id="paxos.proposal.Proposal">
+<em class="property">class </em><code class="descclassname">paxos.proposal.</code><code class="descname">Proposal</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.proposal.Proposal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of a Paxon proposal. Instead of simply keeping a number
+and a value (as in the Synod algorithm, described by Lamport), we also
+keep the decree number.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.proposer">
+<span id="paxos-proposer-module"></span><h2>paxos.proposer module<a class="headerlink" href="#module-paxos.proposer" title="Permalink to this headline">¶</a></h2>
+<p>This module implements a proposer, using the specified messenger.</p>
+<dl class="class">
+<dt id="paxos.proposer.Proposer">
+<em class="property">class </em><code class="descclassname">paxos.proposer.</code><code class="descname">Proposer</code><span class="sig-paren">(</span><em>messenger</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.proposer.Proposer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of a Paxon proposer.</p>
+<p>&#64;param messenger: the messenger instance that will be used</p>
+<dl class="method">
+<dt id="paxos.proposer.Proposer.handle_promise">
+<code class="descname">handle_promise</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em>, <em>acceptor</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.proposer.Proposer.handle_promise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles a promise given by an acceptor. This must check the &#64;param v
+(see below) and update our current proposal accordingly: the proposer
+is only allowed to propose the highest value received in the quorum
+(or anything, if no such value exists).</p>
+<p>This must also check if enough acceptors have responded, and if so,
+start the accept part of the algorithm.</p>
+<p>&#64;param p: the highest-numbered proposal accepted by this acceptor in the past.
+This may be None.
+&#64;param n: the decree number corresponding to the promise (and to &#64;param p)
+&#64;param v: the value corresponding to &#64;param p. This may be None.
+&#64;param acceptor: the acceptor that responded with a promise</p>
+<p>&#64;return True if promise can be handled; False if it cannot (i.e., there
+is no proposal in place, or the current decree we are handling
+is not the one to which the promise refers to)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.proposer.Proposer.handle_refuse">
+<code class="descname">handle_refuse</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>acceptor</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.proposer.Proposer.handle_refuse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles a refusal of a proposal by an acceptor. In case this
+is received, we must stop working on the current proposal, since
+it will not be accepted anyway.</p>
+<p>&#64;param p: the proposal number corresponding to the refusal
+&#64;param proposer: the proposer who initiated this proposal
+&#64;param n: the decree number corresponding to the refusal
+&#64;param acceptor: the acceptor that responded with a refusal</p>
+<p>&#64;return True if we could abort proposal; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.proposer.Proposer.propose">
+<code class="descname">propose</code><span class="sig-paren">(</span><em>n</em>, <em>v</em>, <em>quorum</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.proposer.Proposer.propose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface to start a Paxos proposal. Simply does a lot of
+initialization steps and sends the prepare requests. Notice that
+the proposal number is handled internally, and if we propose in
+the middle of another proposal, we simply stop the previous proposal.</p>
+<p>&#64;param n: the decree number in question
+&#64;param v: the proposed value for this decree
+&#64;param quorum: the quorum to which the prepare will be sent</p>
+<p>Does not return.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.vm">
+<span id="paxos-vm-module"></span><h2>paxos.vm module<a class="headerlink" href="#module-paxos.vm" title="Permalink to this headline">¶</a></h2>
+<p>This module implements the abstraction of a Virtual Machine.</p>
+<dl class="class">
+<dt id="paxos.vm.VM">
+<em class="property">class </em><code class="descclassname">paxos.vm.</code><code class="descname">VM</code><span class="sig-paren">(</span><em>name</em>, <em>messengerClass</em>, <em>receiverClass</em>, <em>use_disk=True</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.vm.VM" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="paxos.vm.VM.add_destination">
+<code class="descname">add_destination</code><span class="sig-paren">(</span><em>name</em>, <em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.vm.VM.add_destination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new destination to this machine&#8217;s network.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.vm.VM.propose_to_quorum">
+<code class="descname">propose_to_quorum</code><span class="sig-paren">(</span><em>n</em>, <em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.vm.VM.propose_to_quorum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts a new proposal.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.vm.VM.serve">
+<code class="descname">serve</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.vm.VM.serve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts an instance of the server (which will receive calls).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.vm.VM.stop_server">
+<code class="descname">stop_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.vm.VM.stop_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the instance of a server.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-paxos" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">paxos package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-paxos.acceptor">paxos.acceptor module</a></li>
+<li><a class="reference internal" href="#module-paxos.learner">paxos.learner module</a></li>
+<li><a class="reference internal" href="#module-paxos.proposal">paxos.proposal module</a></li>
+<li><a class="reference internal" href="#module-paxos.proposer">paxos.proposer module</a></li>
+<li><a class="reference internal" href="#module-paxos.vm">paxos.vm module</a></li>
+<li><a class="reference internal" href="#module-paxos">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to RAM-ified Part-Time Parliament&#8217;s documentation!</a></li>
+      <li>Next: <a href="paxos.messengers.html" title="next chapter">paxos.messengers package</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/paxos.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Victor Domene; Gabriel Guimaraes; Brian Arroyo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/paxos.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

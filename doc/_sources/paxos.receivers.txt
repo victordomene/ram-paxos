@@ -1,0 +1,38 @@
+paxos.receivers package
+=======================
+
+Submodules
+----------
+
+paxos.receivers.rdtpReceiver module
+-----------------------------------
+
+.. automodule:: paxos.receivers.rdtpReceiver
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+paxos.receivers.receiver module
+-------------------------------
+
+.. automodule:: paxos.receivers.receiver
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+paxos.receivers.rpcReceiver module
+----------------------------------
+
+.. automodule:: paxos.receivers.rpcReceiver
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: paxos.receivers
+    :members:
+    :undoc-members:
+    :show-inheritance:

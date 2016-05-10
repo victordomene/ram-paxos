@@ -112,6 +112,12 @@ class Learner():
         return True
 
     def handle_print_ledger(self):
+        """
+        Simply prints out this learner's current ledger.
+
+        Does not return.
+        """
+
         print "##########################"
         print 'Learner {} printing Ledger'.format(self.messenger.name)
 
@@ -123,6 +129,15 @@ class Learner():
         self.lock.release()
 
     def handle_print_differences(self):
+        """
+        Prints the mean of the time differences for this learner. This time
+        difference refers to the same time differences in handle_diff_file:
+        it is the difference between the time when a proposer started a proposal,
+        and the time when the corresponding learner learnt it.
+        
+        Does not return.
+        """
+
         print "##########################"
         print "Learner {} printing time differences".format(self.messenger.name)
 
@@ -134,6 +149,22 @@ class Learner():
         self.lock.release()
 
     def handle_print_difference_mean(self):
+        """
+        Prints the mean of the time differences for this learner. This time
+        difference refers to the same time differences in handle_diff_file:
+        it is the difference between the time when a proposer started a proposal,
+        and the time when the corresponding learner learnt it.
+
+        This is the difference between the time a proposal starts, and the
+        time the learner (in the same VM) actually learned that the proposal
+        passed.
+
+        Notice that this is not a necessary function to Paxos; it only does
+        benchmarking.
+
+        Does not return.
+        """
+
         print "##########################"
         print "Learner {} printing MEAN of time differences".format(self.messenger.name)
         if self.use_disk:
@@ -155,6 +186,19 @@ class Learner():
         self.lock.release()
 
     def handle_diff_file(self):
+        """
+        Prints the timing differences to a file for this given learner.
+
+        This is the difference between the time a proposal starts, and the
+        time the learner (in the same VM) actually learned that the proposal
+        passed.
+
+        Notice that this is not a necessary function to Paxos; it only does
+        benchmarking.
+
+        Does not return.
+        """
+
         print "##########################"
         print "Learner {} printing time differences to file".format(self.messenger.name)
 

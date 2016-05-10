@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>paxos.rdtp package &mdash; RAM-ified Part-Time Parliament 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RAM-ified Part-Time Parliament 0.0.1 documentation" href="index.html" />
+    <link rel="up" title="paxos package" href="paxos.html" />
+    <link rel="next" title="paxos.receivers package" href="paxos.receivers.html" />
+    <link rel="prev" title="paxos.protobufs package" href="paxos.protobufs.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="paxos-rdtp-package">
+<h1>paxos.rdtp package<a class="headerlink" href="#paxos-rdtp-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-paxos.rdtp.rdtp">
+<span id="paxos-rdtp-rdtp-module"></span><h2>paxos.rdtp.rdtp module<a class="headerlink" href="#module-paxos.rdtp.rdtp" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="paxos.rdtp.rdtp.ClientDead">
+<em class="property">exception </em><code class="descclassname">paxos.rdtp.rdtp.</code><code class="descname">ClientDead</code><a class="headerlink" href="#paxos.rdtp.rdtp.ClientDead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="paxos.rdtp.rdtp.ServerDead">
+<em class="property">exception </em><code class="descclassname">paxos.rdtp.rdtp.</code><code class="descname">ServerDead</code><a class="headerlink" href="#paxos.rdtp.rdtp.ServerDead" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="paxos.rdtp.rdtp.recv">
+<code class="descclassname">paxos.rdtp.rdtp.</code><code class="descname">recv</code><span class="sig-paren">(</span><em>sock</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.rdtp.rdtp.recv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="paxos.rdtp.rdtp.recv_message">
+<code class="descclassname">paxos.rdtp.rdtp.</code><code class="descname">recv_message</code><span class="sig-paren">(</span><em>sock</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.rdtp.rdtp.recv_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="paxos.rdtp.rdtp.recv_nbytes">
+<code class="descclassname">paxos.rdtp.rdtp.</code><code class="descname">recv_nbytes</code><span class="sig-paren">(</span><em>sock</em>, <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.rdtp.rdtp.recv_nbytes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="paxos.rdtp.rdtp.send">
+<code class="descclassname">paxos.rdtp.rdtp.</code><code class="descname">send</code><span class="sig-paren">(</span><em>sock</em>, <em>status</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.rdtp.rdtp.send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="paxos.rdtp.rdtp.send_message">
+<code class="descclassname">paxos.rdtp.rdtp.</code><code class="descname">send_message</code><span class="sig-paren">(</span><em>sock</em>, <em>status</em>, <em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.rdtp.rdtp.send_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-paxos.rdtp">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-paxos.rdtp" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">paxos.rdtp package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-paxos.rdtp.rdtp">paxos.rdtp.rdtp module</a></li>
+<li><a class="reference internal" href="#module-paxos.rdtp">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="paxos.html">paxos package</a><ul>
+      <li>Previous: <a href="paxos.protobufs.html" title="previous chapter">paxos.protobufs package</a></li>
+      <li>Next: <a href="paxos.receivers.html" title="next chapter">paxos.receivers package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/paxos.rdtp.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Victor Domene; Gabriel Guimaraes; Brian Arroyo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/paxos.rdtp.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

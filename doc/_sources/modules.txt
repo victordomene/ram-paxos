@@ -1,0 +1,7 @@
+paxos
+=====
+
+.. toctree::
+   :maxdepth: 4
+
+   paxos

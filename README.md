@@ -52,8 +52,12 @@ A common usage would be to spawn a workload with some VM running in port 6666 in
 
 Please note that, as of now, the Paxos client only works with systems using the RDTP message passing mechanism. Currently, the client cannot send requests to VMs using Google RPC.
 
-
 ## Documentation
 
 Documentation for the code can be found in the `/doc/` directory. It contains
-HTML compiled by PyDoc.
+HTML compiled by Sphinx. The repository already includes the compiled version
+of the documentation. The main documentation HTML file is
+
+`/doc/index.html`
+
+and you can navigate through the nice Sphinx interface easily.

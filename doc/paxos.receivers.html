@@ -1,0 +1,307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>paxos.receivers package &mdash; RAM-ified Part-Time Parliament 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RAM-ified Part-Time Parliament 0.0.1 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="paxos-receivers-package">
+<h1>paxos.receivers package<a class="headerlink" href="#paxos-receivers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-paxos.receivers.rdtpReceiver">
+<span id="paxos-receivers-rdtpreceiver-module"></span><h2>paxos.receivers.rdtpReceiver module<a class="headerlink" href="#module-paxos.receivers.rdtpReceiver" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an implementation of the Receiver class using our own
+RDTP Protocol, which we wrote for the Chat Assignment in CS262.</p>
+<p>For the specific documentation of the arguments these methods take and
+what they do at a high level, refer to receiver.py.</p>
+<dl class="class">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver">
+<em class="property">class </em><code class="descclassname">paxos.receivers.rdtpReceiver.</code><code class="descname">rdtpReceiver</code><span class="sig-paren">(</span><em>proposer</em>, <em>acceptor</em>, <em>learner</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.handle_accept">
+<code class="descname">handle_accept</code><span class="sig-paren">(</span><em>p</em>, <em>n</em>, <em>v</em>, <em>proposer</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.handle_accept" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.handle_diff_file">
+<code class="descname">handle_diff_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.handle_diff_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle a diff_file request.</p>
+<p>This is not necessary for a Paxos implementation, and therefore,
+it is not included in receivers.py abstract class.</p>
+<p>Does not return.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.handle_learn">
+<code class="descname">handle_learn</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em>, <em>acceptor</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.handle_learn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.handle_prepare">
+<code class="descname">handle_prepare</code><span class="sig-paren">(</span><em>p</em>, <em>n</em>, <em>proposer</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.handle_prepare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.handle_print_differences">
+<code class="descname">handle_print_differences</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.handle_print_differences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle a print_differences request.</p>
+<p>This is not necessary for a Paxos implementation, and therefore,
+it is not included in receivers.py abstract class.</p>
+<p>Does not return.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.handle_print_ledger">
+<code class="descname">handle_print_ledger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.handle_print_ledger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle a print_ledger request.</p>
+<p>This is not necessary for a Paxos implementation, and therefore,
+it is not included in receivers.py abstract class.</p>
+<p>Does not return.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.handle_promise">
+<code class="descname">handle_promise</code><span class="sig-paren">(</span><em>had_previous</em>, <em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em>, <em>acceptor</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.handle_promise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.handle_refuse">
+<code class="descname">handle_refuse</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>acceptor</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.handle_refuse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.serve">
+<code class="descname">serve</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.serve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.stop_server">
+<code class="descname">stop_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.stop_server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the currently running RDTP server.</p>
+<p>Currently, it does nothing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rdtpReceiver.rdtpReceiver.usage_args">
+<code class="descname">usage_args</code><span class="sig-paren">(</span><em>method</em>, <em>num</em>, <em>expected</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rdtpReceiver.rdtpReceiver.usage_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.receivers.receiver">
+<span id="paxos-receivers-receiver-module"></span><h2>paxos.receivers.receiver module<a class="headerlink" href="#module-paxos.receivers.receiver" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the abstract class of a receiver. It provides all of
+the functionality that is implemented by a specific type of receiver. In
+Paxos, we will allow some different types of communication, but all of them
+must present this interface.</p>
+<p>Notice that a single machine may need to use all of the functionality of a
+Proposer, Learner or Acceptor. For this reason, these methods are all
+accessible.</p>
+<dl class="class">
+<dt id="paxos.receivers.receiver.Receiver">
+<em class="property">class </em><code class="descclassname">paxos.receivers.receiver.</code><code class="descname">Receiver</code><a class="headerlink" href="#paxos.receivers.receiver.Receiver" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="paxos.receivers.receiver.Receiver.handle_accept">
+<code class="descname">handle_accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.receiver.Receiver.handle_accept" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by an Acceptor.</p>
+<p>Responds appropriately to an accept request. This will send Accepted
+requests to the learners (or do nothing if we cannot accept).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.receiver.Receiver.handle_learn">
+<code class="descname">handle_learn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.receiver.Receiver.handle_learn" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by a Learner.</p>
+<p>Responds appropriately to a learnrequest. This must check that
+enough people have accepted this value for this decree, and if so, it
+must add the decree to a &#8220;law book&#8221;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.receiver.Receiver.handle_prepare">
+<code class="descname">handle_prepare</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.receiver.Receiver.handle_prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by an Acceptor.</p>
+<p>Responds appropriately to a prepare request. This will send back
+a promise or a refusal of a promise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.receiver.Receiver.handle_promise">
+<code class="descname">handle_promise</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.receiver.Receiver.handle_promise" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by a Proposer.</p>
+<p>Responds appropriately to a promise. It must keep track of the promises
+this proposer has seen so far, and if everyone in the quorum accepts,
+it must issue Accept Requests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.receiver.Receiver.handle_refuse">
+<code class="descname">handle_refuse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.receiver.Receiver.handle_refuse" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by a Proposer.</p>
+<p>Responds appropriately to a refusal of a promise. This must stop
+the current proposal.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.receiver.Receiver.serve">
+<code class="descname">serve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.receiver.Receiver.serve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts an instance of the server defined by Receiver.</p>
+<p>&#64;param host: the host in which server will run
+&#64;param port: the port in the given host</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.receivers.rpcReceiver">
+<span id="paxos-receivers-rpcreceiver-module"></span><h2>paxos.receivers.rpcReceiver module<a class="headerlink" href="#module-paxos.receivers.rpcReceiver" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an implementation of the Receiver class using Google&#8217;s
+RPC Protocol (gRPC).</p>
+<p>For the specific documentation of the arguments these methods take and 
+what they do at a high level, refer to receiver.py.</p>
+<dl class="class">
+<dt id="paxos.receivers.rpcReceiver.grpcReceiver">
+<em class="property">class </em><code class="descclassname">paxos.receivers.rpcReceiver.</code><code class="descname">grpcReceiver</code><span class="sig-paren">(</span><em>proposer</em>, <em>acceptor</em>, <em>learner</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rpcReceiver.grpcReceiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#paxos.receivers.receiver.Receiver" title="paxos.receivers.receiver.Receiver"><code class="xref py py-class docutils literal"><span class="pre">paxos.receivers.receiver.Receiver</span></code></a></p>
+<dl class="method">
+<dt id="paxos.receivers.rpcReceiver.grpcReceiver.handle_accept">
+<code class="descname">handle_accept</code><span class="sig-paren">(</span><em>request</em>, <em>context</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rpcReceiver.grpcReceiver.handle_accept" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rpcReceiver.grpcReceiver.handle_learn">
+<code class="descname">handle_learn</code><span class="sig-paren">(</span><em>request</em>, <em>context</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rpcReceiver.grpcReceiver.handle_learn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rpcReceiver.grpcReceiver.handle_prepare">
+<code class="descname">handle_prepare</code><span class="sig-paren">(</span><em>request</em>, <em>context</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rpcReceiver.grpcReceiver.handle_prepare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rpcReceiver.grpcReceiver.handle_promise">
+<code class="descname">handle_promise</code><span class="sig-paren">(</span><em>request</em>, <em>context</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rpcReceiver.grpcReceiver.handle_promise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rpcReceiver.grpcReceiver.handle_refuse">
+<code class="descname">handle_refuse</code><span class="sig-paren">(</span><em>request</em>, <em>context</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rpcReceiver.grpcReceiver.handle_refuse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rpcReceiver.grpcReceiver.serve">
+<code class="descname">serve</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rpcReceiver.grpcReceiver.serve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.receivers.rpcReceiver.grpcReceiver.stop_server">
+<code class="descname">stop_server</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.receivers.rpcReceiver.grpcReceiver.stop_server" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.receivers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-paxos.receivers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">paxos.receivers package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-paxos.receivers.rdtpReceiver">paxos.receivers.rdtpReceiver module</a></li>
+<li><a class="reference internal" href="#module-paxos.receivers.receiver">paxos.receivers.receiver module</a></li>
+<li><a class="reference internal" href="#module-paxos.receivers.rpcReceiver">paxos.receivers.rpcReceiver module</a></li>
+<li><a class="reference internal" href="#module-paxos.receivers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/paxos.receivers.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Victor Domene; Gabriel Guimaraes; Brian Arroyo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/paxos.receivers.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

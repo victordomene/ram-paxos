@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>paxos.messengers package &mdash; RAM-ified Part-Time Parliament 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RAM-ified Part-Time Parliament 0.0.1 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="paxos-messengers-package">
+<h1>paxos.messengers package<a class="headerlink" href="#paxos-messengers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-paxos.messengers.messenger">
+<span id="paxos-messengers-messenger-module"></span><h2>paxos.messengers.messenger module<a class="headerlink" href="#module-paxos.messengers.messenger" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the abstract class of a messenger. It provides all of
+the functionality that is implemented by a specific type of messenger. In
+Paxos, we will allow some different types of communication, but all of them
+must present this interface.</p>
+<p>Notice that a single machine may need to use all of the functionality of a
+Proposer, Learner or Acceptor. For this reason, these methods are all
+accessible.</p>
+<dl class="class">
+<dt id="paxos.messengers.messenger.Messenger">
+<em class="property">class </em><code class="descclassname">paxos.messengers.messenger.</code><code class="descname">Messenger</code><a class="headerlink" href="#paxos.messengers.messenger.Messenger" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.add_destination">
+<code class="descname">add_destination</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.add_destination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a host/port combination to the list of possible destinations
+for messages. Basically, this tells our messenger where each machine
+can be found. It will store the host/port combination in a dictionary
+indexed by the given name.</p>
+<p>If a name already exists in the dictionary, this function will update
+the information for the name.</p>
+<p>&#64;param name: the name given to this host/port combination
+&#64;param host: the host to be added
+&#64;param port: the port used in that host</p>
+<p>&#64;return True if successfully added; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.fetch_proposal">
+<code class="descname">fetch_proposal</code><span class="sig-paren">(</span><em>n</em>, <em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.fetch_proposal" title="Permalink to this definition">¶</a></dt>
+<dd><p>For benchmarking purposes, retrieve the timestamp associated with this value</p>
+<p>&#64;param n: the decree number
+&#64;param p: the proposal number</p>
+<p>&#64;return the timestamp given in seconds</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.get_quorum">
+<code class="descname">get_quorum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.get_quorum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a quorum from the destination list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.send_accept">
+<code class="descname">send_accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.send_accept" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by a Proposer.</p>
+<p>Sends an accept request for everyone who is in a given quorum. This
+should be called after a proposer sees a majority of promises (say, if
+everybody in the quorum made the promise).</p>
+<p>&#64;param p: the proposal number in question
+&#64;param n: the decree number in question
+&#64;param v: the value proposed
+&#64;param quorum: the quorum to which message will be sent</p>
+<p>&#64;return True if message is sent; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.send_learn">
+<code class="descname">send_learn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.send_learn" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by an Acceptor.</p>
+<p>Sends a message to a set of learners saying that a given proposal has
+been accepted by this acceptor.</p>
+<p>&#64;param p: the proposal number in question
+&#64;param n: the decree number in question
+&#64;param v: the value accepted
+&#64;param learners: the set of learners to which the message will be sent</p>
+<p>&#64;return True if message is sent; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.send_prepare">
+<code class="descname">send_prepare</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.send_prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by a Proposer.</p>
+<p>Sends a prepare message for everyone who is in a given quorum. This
+message will contain simply the number of the proposal and the number
+of the decree that is being voted.</p>
+<p>&#64;param p: the proposal number in question
+&#64;param n: the decree number in question
+&#64;param quorum: the quorum to which message will be sent</p>
+<p>&#64;return True if message is sent; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.send_promise">
+<code class="descname">send_promise</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.send_promise" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by an Acceptor.</p>
+<p>Sends a promise back to the proposer, which guarantees that this
+acceptor will not accept any proposals with number less than some
+number. Also sends back the value for the highest numbered proposal for
+which this acceptor has responded.</p>
+<p>&#64;param p: the proposal number in question
+&#64;param n: the decree number in question
+&#64;param v: the value of the highest-numbered proposal voted
+&#64;param proposer: the proposer to whom the message will be sent</p>
+<p>&#64;return True if message is sent; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.send_refuse">
+<code class="descname">send_refuse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.send_refuse" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should be used exclusively by an Acceptor.</p>
+<p>Sends a message to the proposer saying that this acceptor will not
+accept this proposal (probably, because it has already taken a promise
+for a higher-number proposal).</p>
+<p>&#64;param p: the proposal number in question
+&#64;param n: the decree number in question
+&#64;param proposer: the proposal to whom the message will be sent</p>
+<p>&#64;return True if message is sent; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.messenger.Messenger.stamp_proposal">
+<code class="descname">stamp_proposal</code><span class="sig-paren">(</span><em>n</em>, <em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.messenger.Messenger.stamp_proposal" title="Permalink to this definition">¶</a></dt>
+<dd><p>For benchmarking purposes, adds a given proposal number and a decree number to a dictionary
+and adds a timestamp</p>
+<p>&#64;param n: the decree number
+&#64;param p: the proposal number</p>
+<p>&#64;return None</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.messengers.rdtpMessenger">
+<span id="paxos-messengers-rdtpmessenger-module"></span><h2>paxos.messengers.rdtpMessenger module<a class="headerlink" href="#module-paxos.messengers.rdtpMessenger" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an implementation of the Messenger class using our own
+RDTP Protocol, which we wrote for the Chat Assignment in CS262.</p>
+<p>For the specific documentation of the arguments these methods take and 
+what they do at a high level, refer to messenger.py.</p>
+<dl class="class">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger">
+<em class="property">class </em><code class="descclassname">paxos.messengers.rdtpMessenger.</code><code class="descname">rdtpMessenger</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#paxos.messengers.messenger.Messenger" title="paxos.messengers.messenger.Messenger"><code class="xref py py-class docutils literal"><span class="pre">paxos.messengers.messenger.Messenger</span></code></a></p>
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.add_destination">
+<code class="descname">add_destination</code><span class="sig-paren">(</span><em>name</em>, <em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.add_destination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a host/port combination to the list of possible destinations
+for messages. Basically, this tells our messenger where each machine
+can be found. It will store the host/port combination in a dictionary
+indexed by the given name.</p>
+<p>If a name already exists in the dictionary, this function will update
+the information for the name.</p>
+<p>&#64;param name: the name given to this host/port combination
+&#64;param host: the host to be added
+&#64;param port: the port used in that host</p>
+<p>&#64;return True if successfully added; False otherwise</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.get_quorum">
+<code class="descname">get_quorum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.get_quorum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.send_accept">
+<code class="descname">send_accept</code><span class="sig-paren">(</span><em>p</em>, <em>n</em>, <em>v</em>, <em>quorum</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.send_accept" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.send_learn">
+<code class="descname">send_learn</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em>, <em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.send_learn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.send_prepare">
+<code class="descname">send_prepare</code><span class="sig-paren">(</span><em>p</em>, <em>n</em>, <em>quorum</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.send_prepare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.send_promise">
+<code class="descname">send_promise</code><span class="sig-paren">(</span><em>had_previous</em>, <em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em>, <em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.send_promise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.send_refuse">
+<code class="descname">send_refuse</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.send_refuse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rdtpMessenger.rdtpMessenger.try_send">
+<code class="descname">try_send</code><span class="sig-paren">(</span><em>name</em>, <em>stub</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rdtpMessenger.rdtpMessenger.try_send" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-paxos.messengers.rpcMessenger">
+<span id="paxos-messengers-rpcmessenger-module"></span><h2>paxos.messengers.rpcMessenger module<a class="headerlink" href="#module-paxos.messengers.rpcMessenger" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an implementation of the Messenger class using Google&#8217;s
+RPC Protocol (gRPC).</p>
+<p>For the specific documentation of the arguments these methods take and 
+what they do at a high level, refer to messenger.py.</p>
+<dl class="class">
+<dt id="paxos.messengers.rpcMessenger.grpcMessenger">
+<em class="property">class </em><code class="descclassname">paxos.messengers.rpcMessenger.</code><code class="descname">grpcMessenger</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.grpcMessenger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#paxos.messengers.messenger.Messenger" title="paxos.messengers.messenger.Messenger"><code class="xref py py-class docutils literal"><span class="pre">paxos.messengers.messenger.Messenger</span></code></a></p>
+<dl class="method">
+<dt id="paxos.messengers.rpcMessenger.grpcMessenger.add_destination">
+<code class="descname">add_destination</code><span class="sig-paren">(</span><em>name</em>, <em>host</em>, <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.grpcMessenger.add_destination" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rpcMessenger.grpcMessenger.get_quorum">
+<code class="descname">get_quorum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.grpcMessenger.get_quorum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rpcMessenger.grpcMessenger.send_accept">
+<code class="descname">send_accept</code><span class="sig-paren">(</span><em>p</em>, <em>n</em>, <em>v</em>, <em>quorum</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.grpcMessenger.send_accept" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rpcMessenger.grpcMessenger.send_learn">
+<code class="descname">send_learn</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em>, <em>learner</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.grpcMessenger.send_learn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rpcMessenger.grpcMessenger.send_prepare">
+<code class="descname">send_prepare</code><span class="sig-paren">(</span><em>p</em>, <em>n</em>, <em>quorum</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.grpcMessenger.send_prepare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rpcMessenger.grpcMessenger.send_promise">
+<code class="descname">send_promise</code><span class="sig-paren">(</span><em>had_previous</em>, <em>p</em>, <em>proposer</em>, <em>n</em>, <em>v</em>, <em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.grpcMessenger.send_promise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="paxos.messengers.rpcMessenger.grpcMessenger.send_refuse">
+<code class="descname">send_refuse</code><span class="sig-paren">(</span><em>p</em>, <em>proposer</em>, <em>n</em>, <em>dest</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.grpcMessenger.send_refuse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="paxos.messengers.rpcMessenger.ignore">
+<code class="descclassname">paxos.messengers.rpcMessenger.</code><code class="descname">ignore</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.ignore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="paxos.messengers.rpcMessenger.ignore_accept">
+<code class="descclassname">paxos.messengers.rpcMessenger.</code><code class="descname">ignore_accept</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.ignore_accept" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="paxos.messengers.rpcMessenger.ignore_learn">
+<code class="descclassname">paxos.messengers.rpcMessenger.</code><code class="descname">ignore_learn</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.ignore_learn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="paxos.messengers.rpcMessenger.ignore_promise">
+<code class="descclassname">paxos.messengers.rpcMessenger.</code><code class="descname">ignore_promise</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.ignore_promise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="paxos.messengers.rpcMessenger.ignore_refuse">
+<code class="descclassname">paxos.messengers.rpcMessenger.</code><code class="descname">ignore_refuse</code><span class="sig-paren">(</span><em>future</em><span class="sig-paren">)</span><a class="headerlink" href="#paxos.messengers.rpcMessenger.ignore_refuse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-paxos.messengers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-paxos.messengers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">paxos.messengers package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-paxos.messengers.messenger">paxos.messengers.messenger module</a></li>
+<li><a class="reference internal" href="#module-paxos.messengers.rdtpMessenger">paxos.messengers.rdtpMessenger module</a></li>
+<li><a class="reference internal" href="#module-paxos.messengers.rpcMessenger">paxos.messengers.rpcMessenger module</a></li>
+<li><a class="reference internal" href="#module-paxos.messengers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/paxos.messengers.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Victor Domene; Gabriel Guimaraes; Brian Arroyo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/paxos.messengers.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

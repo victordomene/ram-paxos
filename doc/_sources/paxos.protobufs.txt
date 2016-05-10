@@ -1,0 +1,22 @@
+paxos.protobufs package
+=======================
+
+Submodules
+----------
+
+paxos.protobufs.paxos_pb2 module
+--------------------------------
+
+.. automodule:: paxos.protobufs.paxos_pb2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: paxos.protobufs
+    :members:
+    :undoc-members:
+    :show-inheritance:

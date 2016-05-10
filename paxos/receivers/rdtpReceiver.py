@@ -189,22 +189,54 @@ class rdtpReceiver():
         return self.learner.handle_learn(p, proposer, n, v, acceptor)
 
     def handle_print_ledger(self):
+        """
+        Handle a print_ledger request.
+        
+        This is not necessary for a Paxos implementation, and therefore,
+        it is not included in receivers.py abstract class. 
+
+        Does not return.
+        """
+
         if RECEIVER_DEBUG:
             print "RECEIVER_DEBUG: Printing ledger"
 
         return self.learner.handle_print_ledger()
 
     def handle_print_differences(self):
+        """
+        Handle a print_differences request.
+        
+        This is not necessary for a Paxos implementation, and therefore,
+        it is not included in receivers.py abstract class. 
+
+        Does not return.
+        """
+
         if RECEIVER_DEBUG:
             print "RECEIVER_DEBUG: Printing differences"
 
         return self.learner.handle_print_differences()
 
     def handle_diff_file(self):
+        """
+        Handle a diff_file request.
+        
+        This is not necessary for a Paxos implementation, and therefore,
+        it is not included in receivers.py abstract class. 
+
+        Does not return.
+        """
+
         if RECEIVER_DEBUG:
             print "RECEIEVER_DEBUG: Writing Differences to file"
 
         return self.learner.handle_diff_file()
 
     def stop_server(self):
+        """
+        Stops the currently running RDTP server.
+    
+        Currently, it does nothing.
+        """
         pass
