@@ -113,6 +113,9 @@ def main():
     number of acceptors (NETWORK_SIZE - 1).
     """
 
+    # guarantee that we have enough proposers
+    assert(NUM_PROPOSERS < NETWORK_SIZE)
+
     # a network is a dictionary of names => (host, port)
     # we first build a network; then we spawn proposers, and finally
     # spawn replicas
