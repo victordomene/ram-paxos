@@ -9,7 +9,7 @@ import os
 import random
 
 ACCEPTOR_DEBUG = False
-USE_DISK = True
+USE_DISK = False
 
 class Acceptor():
     """
@@ -71,8 +71,7 @@ class Acceptor():
             # Also we make a promise never to accept proposal numbered less than p
             self.promises[n] = (p, proposer)
 
-            if USE_DISK:
-            	self.write('{},{},{}'.format(n, p, proposer))
+            self.write('{},{},{}'.format(n, p, proposer))
 
 
             self.lock.release()
@@ -183,5 +182,11 @@ class Acceptor():
 
     def write(self, what):
         for i in xrange(5000):
-            self.outfile.write(what)
-        self.sync()
+            if USE_DISK:
+                # Write what to disk
+                self.outfile.write(what)
+            else:
+                # Write what to RAM
+                a = what[:]
+        if USE_DISK:
+            self.sync()

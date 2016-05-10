@@ -130,7 +130,7 @@ class Learner():
         for diff in self.differences:
         	total += self.differences[diff]
 
-        print "Mean of Differences: {}".format(total / len(self.differences))
+        print "Mean of Differences: {}. Sample size: {}".format(total / len(self.differences), len(self.differences))
 
         self.lock.release()
 
