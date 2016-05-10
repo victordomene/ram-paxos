@@ -32,7 +32,9 @@ This assumes you have `pip` installed; this is easy to get online.
 
 ## Using the Paxos client
 
-Once you start up a Paxos workload (i.e. with `python sample_workload.py`) it will spawn a network of virtual machines talking to each other and passing greek decrees, but it will, by default, print nothing of what the Paxos agents are actually choosing. If you wish to see the ledger of one of the learners, you have to run the `client.py` found in `workloads/`. It accepts arguments of the type
+Once you start up a Paxos workload (i.e. with `python sample_workload.py`) it will spawn a network of virtual machines talking to each other and passing greek decrees, but it will, by default, print nothing of what the Paxos agents are actually choosing. In order to make them actually print what they are doing you can change the DEBUG flags in `proposer.py`, `learner.py`, and `acceptor.py`. All of that debug output, however, is very verbose.
+
+If you wish to simply see the ledger of one of the learners, you can run the `client.py` found in `workloads/`. It accepts arguments of the type
 
 `host:port:command`
 
