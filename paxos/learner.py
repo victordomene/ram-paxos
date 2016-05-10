@@ -89,7 +89,7 @@ class Learner():
             # was sent and when it was learned
             if BENCHMARK:
                 old_time = self.messenger.fetch_proposal(n, p)
-                if old_time != None:
+                if old_time is not None:
                     self.differences[n, p] = time.time() - old_time
 
             self.write_to_ledger(p, proposer, n, v)
@@ -176,5 +176,3 @@ class Learner():
         diff_file = open(filename, "w+")
         pickle.dump(self.differences, diff_file)
         diff_file.close()
-
-

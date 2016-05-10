@@ -29,7 +29,7 @@ def initialize_rdtp_vm(name, use_disk):
 def initialize_grpc_vm(name, use_disk):
     return VM(name, rpcMessenger.grpcMessenger, rpcReceiver.grpcReceiver, use_disk)
 
-def start_vm(name, network, initialize_vm = initialize_rdtp_vm):
+def start_vm(name, network, initialize_vm = initialize_grpc_vm):
     """
     Starts a virtual machine with a given initializer.
     Already starts serving.

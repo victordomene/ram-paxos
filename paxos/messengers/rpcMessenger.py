@@ -35,6 +35,7 @@ def ignore_refuse(future):
 
 class grpcMessenger(Messenger):
     def __init__(self, name):
+        Messenger.__init__(self)
         self.name = name
         self.destinations = {}
         return
