@@ -1,1 +1,1 @@
-pandoc -s --latex-engine=pdflatex --latex-engine-opt="-shell-escape" --template default.latex --highlight-style=tango final_paper.md -o final_paper.pdf
+pandoc -s --latex-engine=pdflatex --latex-engine-opt="-shell-escape" --template default.latex --highlight-style=tango final_paper_with_subfigs.md -o final_paper.tex

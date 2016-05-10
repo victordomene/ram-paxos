@@ -314,7 +314,7 @@ what those benchmarks should be (and timing constraints), we omit those.
 
 ### RDTP, RAM vs. Disk, fixed machines, variable proposal, no latency
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
@@ -324,7 +324,7 @@ what those benchmarks should be (and timing constraints), we omit those.
 
 ### gRPC, RAM vs. Disk, fixed machines, variable proposal, no latency
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
@@ -334,7 +334,7 @@ what those benchmarks should be (and timing constraints), we omit those.
 
 ### RDTP, RAM vs. Disk, variable machines, fixed proposal, no latency
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
@@ -348,7 +348,7 @@ what those benchmarks should be (and timing constraints), we omit those.
 
 ### RDTP, RAM vs. Disk, variable machines, fixed proposal, latency
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
@@ -364,7 +364,7 @@ what those benchmarks should be (and timing constraints), we omit those.
 
 ### RDTP, RAM vs. Disk, fixed machines, variable proposal, no latency
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
@@ -374,7 +374,7 @@ what those benchmarks should be (and timing constraints), we omit those.
 
 ### gRPC, RAM vs. Disk, fixed machines, variable proposal, no latency
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering

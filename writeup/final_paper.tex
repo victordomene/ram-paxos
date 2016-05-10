@@ -6,6 +6,7 @@
 \usepackage{ifxetex,ifluatex}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{float}
 \usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
@@ -76,6 +77,15 @@
 \newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
 \newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
 \newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 \IfFileExists{parskip.sty}{%
 \usepackage{parskip}
 }{% else
@@ -156,6 +166,8 @@ describe in depth the design choices made in writing this library, and
 shows the results we have found in benchmarking the different ``inks''.
 We also describe all of the different workloads we created in order to
 perform this benchmarking.
+
+Our implementation can be found at \href{https://github.com/victordomene/ram-paxos}{this GitHub repository}
 
 \section{Paxos Implementation}\label{paxos-implementation}
 
@@ -467,16 +479,67 @@ constraints), we omit those.
 \subsubsection{RDTP, RAM vs.~Disk, fixed machines, variable proposal, no
 latency}\label{rdtp-ram-vs.disk-fixed-machines-variable-proposal-no-latency}
 
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.8\textwidth}
+    \centering
+    \includegraphics[width=1.0\textwidth]{RDTP_fixed_machines_variable_proposal_no_latency.png}
+\end{subfigure}
+\end{figure}
 
+\medskip
+
+Notice that for small proposal sizes, the RAM vs. disk comparison is not
+particularly significant. Only after $10$KB, we can actually notice some
+difference in performance.
 
 \subsubsection{gRPC, RAM vs.~Disk, fixed machines, variable proposal, no
 latency}\label{grpc-ram-vs.disk-fixed-machines-variable-proposal-no-latency}
 
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.8\textwidth}
+    \centering
+    \includegraphics[width=1.0\textwidth]{GRPC_fixed_machines_variable_proposal_no_latency.png}
+\end{subfigure}
+\end{figure}
+
+\medskip
+
+A similar trend from the previous benchmark appears here, except that
+gRPC itself introduces much more overhead. The disk vs. RAM comparison
+is dwarfed by the effect of the communication protocol, until we get to
+around $100$KB.
+
 \subsubsection{RDTP, RAM vs.~Disk, variable machines, fixed proposal, no
 latency}\label{rdtp-ram-vs.disk-variable-machines-fixed-proposal-no-latency}
 
-\subsubsection{RDTP, RAM vs.~Disk, variable machines, fixed proposal,
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.49\textwidth}
+    \centering
+    \includegraphics[width=1.0\textwidth]{RAM_RDTP_variable_machines_fixed_proposal_no_latency.png}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+    \centering
+    \includegraphics[width=1.0\textwidth]{disk_RDTP_variable_machines_fixed_proposal_no_latency.png}
+\end{subfigure}
+\end{figure}
+
+For this set of graphs, we varied the number of machines. We did not notice any differences between RAM and disk for this comparison, probably because the proposal size was small ($1$KB).
+
+\subsubsection{RDTP, only RAM, variable machines, fixed proposal,
 latency}\label{rdtp-ram-vs.disk-variable-machines-fixed-proposal-latency}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.8\textwidth}
+    \centering
+    \includegraphics[width=1.0\textwidth]{RAM_RDTP_variable_machines_fixed_proposal_latency.png}
+\end{subfigure}
+\end{figure}
+
+Here, latency can be seen to have a much more profound effect in the performance when compared to the performance with the disk.
 
 \subsection{Workload B}\label{workload-b}
 
@@ -485,24 +548,55 @@ latency}\label{rdtp-ram-vs.disk-fixed-machines-variable-proposal-no-latency-1}
 
 \begin{figure}[H]
 \centering
-\begin{subfigure{.5\textwidth}
+\begin{subfigure}{0.8\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{two_proposers_RDTP_fixed_machines_variable_proposal_no_latency.png}
+    \includegraphics[width=1.0\textwidth]{two_proposers_RDTP_fixed_machines_variable_proposal_no_latency.png}
 \end{subfigure}
 \end{figure}
+
+The same kind of trend from Workload A happened again: we only see significant increase after $10$KB. Notice, however, that there are many more messages being sent (due to the nature of having more proposals), so that we see a more significant effect.
 
 \subsubsection{gRPC, RAM vs.~Disk, fixed machines, variable proposal, no
 latency}\label{grpc-ram-vs.disk-fixed-machines-variable-proposal-no-latency-1}
 
 \begin{figure}[H]
 \centering
-\begin{subfigure{.5\textwidth}
+\begin{subfigure}{0.8\textwidth}
     \centering
-    \includegraphics[width=0.8\textwidth]{two_proposers_GRPC_fixed_machines_variable_proposal_no_latency.png}
+    \includegraphics[width=1.0\textwidth]{two_proposers_GRPC_fixed_machines_variable_proposal_no_latency.png}
 \end{subfigure}
 \end{figure}
 
+The same trend from the previous benchmark can be seen, except that,
+as before, gRPC is much slower than RDTP. In fact, we did not even run
+gRPC with $1$MB, since it overloaded our machines.
+
 \section{Conclusions}\label{conclusions}
+
+Paxos was an incredibly interesting algorithm to implement (and quite hard). There were several parameters that we could vary in our experiments:
+
+\begin{itemize}
+\tightlist
+\item RDTP vs. gRPC;
+\item Proposal Size;
+\item Number of Machines;
+\item RAM vs Disk;
+\item Number of Proposers;
+\item Latency.
+\end{itemize}
+
+We arrived at the following conclusions:
+
+\begin{itemize}
+\tightlist
+\item Google's gRPC works very reliably. However, it incurs a high performance cost when compared to simpler, lower-level message-passing schemes. Furthermore, it can prove challenging to debug.
+\item With small proposals, writing to disk or to RAM did not affect performance, since the network latency and the general overhead of the Paxos algorithm will dominate the measurements. We currently wonder whether an implementation of Paxos in C++ or C could present less  amount of overhead as our Python implementation, in order to highlight the differences between disk and RAM more reliably.
+\item Obviously, increasing the number of machines in the network will increase the number of required messages, affecting performance and increasing runtime.
+\item With more proposers, we usually saw a higher number of messages sent, and therefore a slightly higher runtime.
+\item Introducing higher network latency will greatly affect performance, since the whole Paxos algorithm relies on the speed of messages.
+\end{itemize}
+
+In general, our hypothesis that writing to disk can incur extra overhead is proven correct, as long as the proposal is big enough (roughly, more than $100$KB, which seems unlikely for general purposes nowadays).
 
 \section{References}\label{references}
 
